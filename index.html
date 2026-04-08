@@ -1,942 +1,1041 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>穿搭魔镜</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>每日穿搭魔镜</title>
 <style>
-*{box-sizing:border-box;margin:0;padding:0;}
+*{margin:0;padding:0;box-sizing:border-box;}
 :root{
-  --bg:#FAF7F2;--white:#fff;--g1:#F5F5F5;--g2:#E5E5E5;
-  --g3:#9CA3AF;--g4:#6B7280;--dark:#1F2937;
-  --radius:18px;--shadow:0 4px 24px rgba(0,0,0,0.08);
+  --bg:#F9F7F4;--card:#fff;--dark:#222;
+  --accent:#C9A99A;--accent-light:#FFF8F5;--accent-border:#F0D8D0;
+  --gray:#999;--light:#f5f5f5;--green:#16a34a;
+  --green-light:#f0fdf4;--green-border:#86efac;
 }
-body{background:var(--bg);font-family:'PingFang SC','Microsoft YaHei',sans-serif;
-  min-height:100vh;color:var(--dark);}
-.header{position:sticky;top:0;z-index:100;
-  background:rgba(250,247,242,0.95);backdrop-filter:blur(20px);
-  border-bottom:1px solid #eee;padding:14px 20px;}
-.header-inner{max-width:480px;margin:0 auto;
-  display:flex;align-items:center;justify-content:space-between;}
-.logo{font-size:19px;font-weight:900;}
-.logo span{font-size:11px;font-weight:400;color:var(--g3);display:block;}
-.weather-btn{display:flex;align-items:center;gap:8px;background:white;
-  border-radius:14px;padding:8px 14px;border:1.5px solid var(--g2);
-  cursor:pointer;box-shadow:var(--shadow);}
-.temp-input-box{max-width:480px;margin:10px auto 0;display:none;}
-.temp-input-row{display:flex;gap:8px;}
-.temp-input-row input{flex:1;padding:10px 14px;border:1.5px solid var(--g2);
-  border-radius:12px;font-size:14px;outline:none;font-family:inherit;}
-.temp-input-row button{background:var(--dark);color:white;border:none;
-  border-radius:12px;padding:10px 18px;font-weight:700;cursor:pointer;}
-.page{display:none;max-width:480px;margin:0 auto;padding:0 20px 100px;}
+body{font-family:-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;background:var(--bg);color:var(--dark);min-height:100vh;}
+.nav{background:#fff;border-bottom:1px solid #f0f0f0;padding:0 16px;display:flex;align-items:center;justify-content:space-between;height:52px;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,0.06);}
+.nav-logo{font-size:18px;font-weight:bold;}
+.nav-tabs{display:flex;gap:2px;}
+.nav-tab{padding:7px 13px;border-radius:10px;font-size:13px;cursor:pointer;border:none;background:transparent;color:var(--gray);font-weight:500;transition:all .2s;}
+.nav-tab.active{background:var(--dark);color:#fff;}
+.page{display:none;padding:16px;max-width:720px;margin:0 auto;padding-bottom:40px;}
 .page.active{display:block;}
-.card{background:var(--white);border-radius:var(--radius);
-  padding:20px;margin-bottom:16px;box-shadow:var(--shadow);}
-.card-title{font-size:14px;font-weight:800;margin-bottom:16px;}
-.upload-zone{border:2px dashed var(--g2);border-radius:16px;
-  padding:44px 20px;text-align:center;cursor:pointer;
-  background:var(--g1);position:relative;overflow:hidden;transition:all .3s;}
-.upload-zone:hover{border-color:#D4A5A5;background:#fdf5f5;}
-.upload-zone input{position:absolute;inset:0;opacity:0;
-  cursor:pointer;width:100%;height:100%;}
-.preview{width:100%;max-height:280px;object-fit:cover;
-  border-radius:14px;margin-bottom:14px;display:none;}
-.ai-box{display:none;background:#f5f3ff;border:1.5px solid #ddd6fe;
-  border-radius:14px;padding:22px;margin-bottom:14px;text-align:center;}
-.spinner{width:36px;height:36px;border:3px solid #e5e7eb;
-  border-top-color:#7c3aed;border-radius:50%;
-  animation:spin .8s linear infinite;margin:0 auto 10px;}
+.card{background:#fff;border-radius:14px;padding:18px;margin-bottom:14px;box-shadow:0 2px 10px rgba(0,0,0,0.06);}
+.btn{background:var(--dark);color:#fff;border:none;border-radius:11px;padding:13px 20px;font-size:14px;font-weight:bold;cursor:pointer;width:100%;letter-spacing:1px;transition:opacity .2s;}
+.btn:hover{opacity:.85;}
+.btn:disabled{background:#ccc;cursor:not-allowed;}
+.btn-ghost{background:transparent;color:var(--gray);border:1.5px solid #e5e5e5;border-radius:11px;padding:11px 20px;font-size:13px;cursor:pointer;width:100%;margin-top:8px;}
+.btn-ghost:hover{border-color:#bbb;color:var(--dark);}
+label{display:block;font-size:11px;font-weight:bold;color:var(--gray);letter-spacing:1px;margin-bottom:6px;text-transform:uppercase;}
+input,select{width:100%;padding:9px 11px;border:1.5px solid #f0f0f0;border-radius:9px;font-size:14px;color:var(--dark);background:#fff;outline:none;transition:border .2s;}
+input:focus,select:focus{border-color:var(--accent);}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.fgroup{margin-bottom:12px;}
+.tag{display:inline-block;font-size:11px;padding:2px 9px;border-radius:999px;font-weight:500;}
+.tag-t{background:#f0f0f0;color:#666;}
+.tag-c{background:var(--accent-light);color:var(--accent);}
+.tag-s{background:#f0f9ff;color:#0369a1;}
+
+/* 添加页 */
+.upload-zone{border:2px dashed #e5e5e5;border-radius:14px;padding:44px 20px;text-align:center;cursor:pointer;transition:all .2s;background:#fff;margin-bottom:14px;}
+.upload-zone:hover{border-color:var(--accent);background:var(--accent-light);}
+.u-icon{font-size:44px;display:block;margin-bottom:10px;}
+.u-title{font-size:16px;font-weight:bold;display:block;margin-bottom:5px;}
+.u-sub{font-size:12px;color:var(--gray);}
+.preview-img{width:100%;max-height:280px;object-fit:cover;border-radius:12px;display:block;margin-bottom:14px;}
+.ai-box{background:#f5f3ff;border:1.5px solid #ddd6fe;border-radius:12px;padding:24px;text-align:center;margin-bottom:14px;}
+.spinner{width:32px;height:32px;border:3px solid #f0f0f0;border-top-color:var(--accent);border-radius:50%;margin:0 auto 10px;animation:spin .8s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg);}}
-.ai-tip{font-size:14px;font-weight:700;color:#7c3aed;}
-.form-box{display:none;}
-.ok-banner{background:#f0fdf4;border:1.5px solid #bbf7d0;
-  border-radius:12px;padding:12px 16px;margin-bottom:16px;
-  font-size:13px;font-weight:700;color:#16a34a;}
-.label{font-size:11px;font-weight:700;color:var(--g4);
-  text-transform:uppercase;letter-spacing:1px;
-  margin-bottom:6px;display:block;}
-.inp,.sel{width:100%;padding:12px 14px;border:1.5px solid var(--g2);
-  border-radius:12px;font-size:14px;font-weight:600;
-  color:var(--dark);background:white;outline:none;
-  transition:border-color .2s;font-family:inherit;margin-bottom:14px;}
-.inp:focus,.sel:focus{border-color:var(--dark);}
-.two{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
-.btn{width:100%;padding:14px;border:none;border-radius:14px;
-  font-size:15px;font-weight:800;cursor:pointer;
-  display:flex;align-items:center;justify-content:center;
-  gap:8px;font-family:inherit;transition:all .2s;}
-.btn-dark{background:var(--dark);color:white;
-  box-shadow:0 4px 14px rgba(31,41,55,.3);margin-bottom:10px;}
-.btn-dark:active{transform:scale(.98);}
-.btn-ghost{background:transparent;color:var(--dark);
-  border:2px solid var(--g2);}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
-.cloth-card{background:white;border-radius:16px;overflow:hidden;
-  box-shadow:var(--shadow);border:1px solid var(--g2);
-  position:relative;cursor:pointer;transition:transform .2s;}
-.cloth-card:hover{transform:translateY(-3px);}
-.cloth-thumb{width:100%;height:140px;object-fit:cover;background:var(--g1);}
-.cloth-ph{width:100%;height:140px;
-  background:linear-gradient(135deg,#f5f0e8,#ede8e0);
-  display:flex;align-items:center;justify-content:center;font-size:38px;}
-.cloth-info{padding:10px;}
-.cloth-name{font-size:13px;font-weight:700;margin-bottom:6px;
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.tags{display:flex;gap:4px;flex-wrap:wrap;}
-.tag{font-size:10px;font-weight:600;padding:2px 8px;border-radius:999px;}
-.t-type{background:#eff6ff;border:1px solid #dbeafe;color:#2563eb;}
-.t-color{background:#f9fafb;border:1px solid var(--g2);color:var(--g4);}
-.t-style{background:#f0fdf4;border:1px solid #dcfce7;color:#16a34a;}
-.del-btn{position:absolute;top:8px;right:8px;width:26px;height:26px;
-  border-radius:50%;background:rgba(239,68,68,.9);color:white;
-  border:none;cursor:pointer;font-size:13px;
-  display:none;align-items:center;justify-content:center;}
-.cloth-card:hover .del-btn{display:flex;}
-.empty{text-align:center;padding:60px 20px;}
-.empty-icon{font-size:56px;margin-bottom:16px;}
-.empty-t{font-size:16px;font-weight:700;margin-bottom:8px;}
-.empty-s{font-size:13px;color:var(--g3);line-height:1.7;}
-.weather-hero{background:linear-gradient(135deg,#1f2937,#374151);
-  border-radius:var(--radius);padding:22px;margin-bottom:16px;color:white;}
-.pills{display:flex;gap:8px;overflow-x:auto;
-  padding-bottom:4px;margin-bottom:16px;}
-.pills::-webkit-scrollbar{display:none;}
-.pill{flex-shrink:0;padding:8px 18px;border-radius:999px;
-  border:1.5px solid var(--g2);background:white;
-  font-size:13px;font-weight:600;color:var(--g4);
-  cursor:pointer;transition:all .2s;}
-.pill.active{background:var(--dark);color:white;
-  border-color:var(--dark);box-shadow:0 4px 12px rgba(31,41,55,.25);}
-.result-box{display:none;animation:up .4s ease both;}
-@keyframes up{from{opacity:0;transform:translateY(20px);}
-  to{opacity:1;transform:translateY(0);}}
-.pair{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;}
-.outfit-card{background:white;border-radius:16px;overflow:hidden;
-  box-shadow:var(--shadow);border:1px solid var(--g2);}
-.outfit-img{width:100%;height:150px;object-fit:cover;background:var(--g1);}
-.outfit-ph{width:100%;height:150px;
-  background:linear-gradient(135deg,#f5f0e8,#ede8e0);
-  display:flex;align-items:center;justify-content:center;font-size:40px;}
-.outfit-body{padding:12px;}
-.outfit-role{font-size:10px;font-weight:700;color:var(--g3);
-  text-transform:uppercase;letter-spacing:1px;margin-bottom:3px;}
-.outfit-name{font-size:13px;font-weight:800;}
-.reason-tag{display:inline-block;margin-top:6px;font-size:10px;font-weight:700;
-  background:#fdf2f8;color:#be185d;padding:3px 8px;border-radius:999px;
-  border:1px solid #fce7f3;}
-.makeup-row{display:flex;align-items:flex-start;gap:12px;
-  padding:12px 0;border-bottom:1px solid var(--g1);}
-.makeup-row:last-child{border-bottom:none;}
-.m-icon{width:38px;height:38px;border-radius:12px;background:var(--g1);
-  display:flex;align-items:center;justify-content:center;
-  font-size:20px;flex-shrink:0;}
-.m-main{font-size:13px;font-weight:700;margin-bottom:2px;}
-.m-sub{font-size:12px;color:var(--g3);}
-.link-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;}
-.s-link{display:inline-flex;align-items:center;gap:5px;padding:8px 14px;
-  border-radius:999px;font-size:12px;font-weight:700;
-  text-decoration:none;transition:all .2s;}
-.toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);
-  background:var(--dark);color:white;padding:12px 24px;
-  border-radius:999px;font-size:13px;font-weight:700;
-  box-shadow:0 8px 24px rgba(0,0,0,.2);z-index:9999;
-  opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap;}
-.toast.show{opacity:1;}
-.bottom-nav{position:fixed;bottom:0;left:0;right:0;
-  background:rgba(250,247,242,.96);backdrop-filter:blur(20px);
-  border-top:1px solid var(--g2);
-  display:flex;justify-content:space-around;
-  padding:8px 0 20px;z-index:100;}
-.nav-btn{display:flex;flex-direction:column;align-items:center;gap:3px;
-  padding:8px 20px;border:none;background:none;cursor:pointer;}
-.nav-icon{font-size:22px;}
-.nav-label{font-size:10px;font-weight:600;color:var(--g3);}
-.nav-btn.active .nav-label{color:var(--dark);font-weight:800;}
+.ai-tip{font-size:13px;font-weight:bold;color:#7c3aed;}
+.ok-banner{background:var(--green-light);border:1.5px solid var(--green-border);border-radius:10px;padding:10px 14px;font-size:13px;font-weight:bold;color:var(--green);margin-bottom:14px;}
+.temp-row{display:flex;align-items:center;gap:10px;}
+.temp-row input{text-align:center;}
+.temp-sep{color:var(--gray);font-size:16px;flex-shrink:0;}
+
+/* 衣橱页 */
+.wh{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;}
+.pt{font-size:24px;font-weight:bold;}
+.ic{font-size:13px;color:var(--accent);font-weight:bold;margin-left:6px;}
+.filter-row{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;margin-bottom:14px;scrollbar-width:none;}
+.filter-row::-webkit-scrollbar{display:none;}
+.fbtn{white-space:nowrap;padding:6px 14px;border-radius:999px;font-size:12px;border:1.5px solid #f0f0f0;background:#fff;color:var(--gray);cursor:pointer;transition:all .2s;}
+.fbtn.active{background:var(--dark);color:#fff;border-color:var(--dark);}
+.wgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;}
+.ccard{background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.06);transition:transform .2s;}
+.ccard:hover{transform:translateY(-2px);}
+.cimgw{position:relative;}
+.cimg{width:100%;height:130px;object-fit:cover;display:block;}
+.cblock{width:100%;height:130px;display:flex;align-items:center;justify-content:center;font-size:36px;}
+.delbtn{position:absolute;top:5px;right:5px;width:24px;height:24px;background:rgba(0,0,0,.5);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;cursor:pointer;border:none;}
+.delbtn:hover{background:rgba(200,0,0,.7);}
+.cinfo{padding:9px 11px 11px;}
+.cname{display:block;font-size:13px;font-weight:bold;color:var(--dark);margin-bottom:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.ctags{display:flex;flex-wrap:wrap;gap:3px;margin-bottom:5px;}
+.ctemp{font-size:11px;color:var(--gray);}
+.empty{text-align:center;padding:50px 20px;color:var(--gray);}
+.empty-icon{font-size:56px;display:block;margin-bottom:12px;}
+.empty-t{font-size:18px;font-weight:bold;color:var(--dark);display:block;margin-bottom:6px;}
+.empty-s{font-size:13px;line-height:1.6;}
+
+/* 穿搭页 */
+.sh{display:flex;align-items:baseline;gap:8px;margin-bottom:14px;}
+.st{font-size:22px;font-weight:bold;}
+.ss{font-size:12px;color:var(--accent);}
+.srow{display:flex;gap:10px;margin-bottom:14px;}
+.si{flex:1;}
+
+/* 潮流趋势 */
+.tbar{background:#fff;border-radius:14px;padding:14px 16px;margin-bottom:14px;box-shadow:0 2px 10px rgba(0,0,0,0.05);}
+.tbar-h{display:flex;justify-content:space-between;align-items:center;cursor:pointer;}
+.tbar-t{font-size:14px;font-weight:bold;color:var(--accent);letter-spacing:1px;}
+.tbar-a{font-size:12px;color:#ccc;}
+.tsec{display:block;font-size:10px;font-weight:bold;color:var(--gray);letter-spacing:2px;margin:12px 0 7px;text-transform:uppercase;}
+.cscroll{display:flex;gap:10px;overflow-x:auto;padding-bottom:5px;scrollbar-width:none;}
+.cscroll::-webkit-scrollbar{display:none;}
+.chip{display:flex;flex-direction:column;align-items:center;flex-shrink:0;width:72px;}
+.chip .cdot{width:32px;height:32px;border-radius:50%;margin-bottom:4px;box-shadow:0 1px 4px rgba(0,0,0,0.12);}
+.chip-n{font-size:10px;font-weight:bold;color:var(--dark);text-align:center;}
+.chip-d{font-size:9px;color:var(--gray);text-align:center;line-height:1.3;margin-top:2px;}
+.twrap{display:flex;flex-wrap:wrap;gap:5px;}
+.tkw{background:#f5f5f5;border-radius:999px;padding:4px 10px;font-size:11px;color:#666;}
+.tpc{background:var(--accent-light);border:1px solid var(--accent-border);border-radius:999px;padding:4px 10px;font-size:11px;color:var(--accent);}
+
+/* 搭配卡片 */
+.osec-h{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px;}
+.osec-t{font-size:16px;font-weight:bold;}
+.osec-s{font-size:12px;color:#bbb;}
+.ocard{background:#fff;border-radius:14px;margin-bottom:12px;overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,0.06);}
+.ohdr{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;cursor:pointer;transition:background .15s;}
+.ohdr:hover{background:#fafafa;}
+.ometa{display:flex;align-items:center;gap:10px;flex:1;}
+.rbadge{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:bold;flex-shrink:0;}
+.r1{background:#FFD700;color:#5D4A00;}
+.r2{background:#C0C0C0;color:#3D3D3D;}
+.r3{background:#CD7F32;color:#fff;}
+.ro{background:#f5f5f5;color:#999;}
+.oinfo{flex:1;min-width:0;}
+.oname{display:block;font-size:15px;font-weight:bold;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.otip{display:block;font-size:12px;color:var(--accent);margin-top:2px;font-style:italic;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.scir{width:44px;height:44px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0;}
+.sh_{background:#f0fdf4;border:2px solid #86efac;}
+.sm_{background:#fffbeb;border:2px solid #fcd34d;}
+.sl_{background:#fff7ed;border:2px solid #fdba74;}
+.snum{font-size:15px;font-weight:bold;line-height:1;}
+.slbl{font-size:10px;color:var(--gray);}
+.tbadges{display:flex;flex-wrap:wrap;gap:5px;padding:0 16px 12px;}
+.tbadge{font-size:11px;font-weight:bold;padding:3px 9px;border-radius:999px;}
+.prow{display:flex;align-items:center;gap:5px;padding:0 16px 12px;}
+.pdot{width:18px;height:18px;border-radius:50%;box-shadow:0 1px 3px rgba(0,0,0,0.1);}
+.phint{font-size:11px;color:#bbb;margin-left:3px;}
+
+/* 详情 */
+.odet{border-top:1px solid #f5f5f5;padding:16px;}
+.dsec{margin-bottom:20px;}
+.dtitle{display:block;font-size:14px;font-weight:bold;color:var(--dark);margin-bottom:10px;padding-bottom:8px;border-bottom:1.5px solid #f5f5f5;letter-spacing:1px;}
+.igrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px;}
+.icard{background:#fafafa;border-radius:10px;padding:10px;display:flex;flex-direction:column;gap:5px;}
+.iimg{width:100%;height:85px;object-fit:cover;border-radius:7px;display:block;}
+.iblock{width:100%;height:85px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:28px;}
+.ilbl{font-size:10px;color:var(--gray);font-weight:bold;letter-spacing:1px;}
+.iname{font-size:12px;font-weight:bold;line-height:1.3;}
+.itags{display:flex;flex-wrap:wrap;gap:3px;}
+.itag{font-size:10px;background:#f0f0f0;color:#666;padding:1px 7px;border-radius:999px;}
+.agrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px;}
+.aitem{background:#fafafa;border-radius:10px;padding:10px 6px;display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center;}
+.aicon{font-size:20px;}
+.atype{font-size:10px;color:var(--gray);font-weight:bold;letter-spacing:1px;}
+.aval{font-size:12px;font-weight:600;line-height:1.3;}
+.advbox{background:var(--accent-light);border-radius:9px;padding:10px 12px;margin-bottom:8px;display:flex;flex-direction:column;gap:5px;}
+.adv{font-size:12px;color:#666;line-height:1.5;}
+.tipbox{background:var(--green-light);border-left:3px solid var(--green-border);border-radius:0 7px 7px 0;padding:9px 11px;}
+.tiptxt{font-size:12px;color:var(--green);font-weight:600;}
+.mkbox{background:linear-gradient(135deg,#FFF8F5,#FDF4FF);border-radius:10px;padding:14px;margin-bottom:12px;border:1px solid var(--accent-border);}
+.mkcon{display:block;font-size:16px;font-weight:bold;margin-bottom:5px;letter-spacing:1px;}
+.mkvibe{display:block;font-size:12px;color:var(--accent);font-style:italic;margin-bottom:7px;line-height:1.5;}
+.mknote{display:block;font-size:11px;color:#888;background:rgba(255,255,255,.7);padding:5px 9px;border-radius:6px;}
+.mkblk{background:#fafafa;border-radius:10px;padding:12px;margin-bottom:8px;}
+.mkblkt{display:block;font-size:13px;font-weight:bold;margin-bottom:7px;letter-spacing:1px;}
+.mkd{display:block;font-size:12px;color:#555;line-height:1.6;margin-bottom:4px;}
+.pname{display:block;font-size:11px;color:var(--accent);font-weight:bold;margin-bottom:8px;background:var(--accent-light);padding:5px 9px;border-radius:6px;}
+.ssteps{display:flex;flex-direction:column;gap:7px;margin-bottom:10px;}
+.sstep{display:flex;align-items:flex-start;gap:8px;background:#fff;border-radius:8px;padding:8px 10px;}
+.sdot{width:24px;height:24px;border-radius:50%;flex-shrink:0;box-shadow:0 1px 3px rgba(0,0,0,0.15);margin-top:2px;}
+.sinfo{flex:1;}
+.shdr{display:flex;align-items:center;gap:5px;margin-bottom:2px;flex-wrap:wrap;}
+.sarea{font-size:10px;font-weight:bold;color:var(--gray);background:#f0f0f0;padding:1px 7px;border-radius:999px;}
+.scolor{font-size:12px;font-weight:bold;}
+.shex{font-size:10px;color:#bbb;font-family:monospace;}
+.sdesc{font-size:11px;color:#666;line-height:1.4;}
+.edet{display:flex;flex-direction:column;gap:5px;margin-bottom:8px;}
+.eitem{font-size:12px;color:#555;line-height:1.5;background:#fff;padding:7px 9px;border-radius:7px;}
+.plist{display:flex;flex-direction:column;gap:2px;border-top:1px solid #f0f0f0;padding-top:7px;margin-top:7px;}
+.pitem{font-size:11px;color:var(--accent);line-height:1.5;}
+.reclip{display:flex;gap:10px;background:#fff;border-radius:10px;padding:10px;margin-bottom:10px;border:1.5px solid var(--accent-border);}
+.lswlg{width:42px;height:42px;border-radius:50%;flex-shrink:0;box-shadow:0 2px 6px rgba(0,0,0,0.15);}
+.linfo{flex:1;}
+.lbadge{display:inline-block;font-size:10px;font-weight:bold;color:var(--accent);background:var(--accent-light);padding:2px 7px;border-radius:999px;margin-bottom:4px;border:1px solid var(--accent-border);}
+.lname{display:block;font-size:13px;font-weight:bold;margin-bottom:2px;}
+.lno{display:block;font-size:11px;color:#888;margin-bottom:2px;font-family:monospace;}
+.ldesc{display:block;font-size:11px;color:#888;line-height:1.4;}
+.lotitle{display:block;font-size:11px;font-weight:bold;color:var(--gray);letter-spacing:1px;margin-bottom:7px;}
+.lopts{display:flex;flex-direction:column;gap:7px;margin-bottom:8px;}
+.lopt{display:flex;align-items:center;gap:8px;background:#fff;border-radius:8px;padding:8px 10px;}
+.lswsm{width:26px;height:26px;border-radius:50%;flex-shrink:0;box-shadow:0 1px 4px rgba(0,0,0,0.12);}
+.loi{flex:1;}
+.lon{display:block;font-size:12px;font-weight:bold;margin-bottom:2px;}
+.lono{display:block;font-size:10px;color:#bbb;font-family:monospace;margin-bottom:2px;}
+.lod{display:block;font-size:11px;color:#888;}
+.ftip{display:block;font-size:11px;color:#666;background:#f5f5f5;padding:7px 10px;border-radius:7px;}
+.extgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;}
+.extitem{background:#fafafa;border-radius:9px;padding:12px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:5px;}
+.extico{font-size:22px;}
+.extt{font-size:10px;color:var(--gray);font-weight:bold;letter-spacing:1px;}
+.extv{font-size:12px;font-weight:600;line-height:1.4;}
+.ovbox{background:linear-gradient(135deg,#FFF8F5,#FDF4FF);border-radius:9px;padding:10px 12px;border:1px solid var(--accent-border);}
+.ovtip{font-size:12px;color:var(--accent);font-weight:bold;line-height:1.6;letter-spacing:1px;}
+.arow{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px;}
+.abtn{padding:11px 0;border-radius:9px;font-size:13px;font-weight:bold;text-align:center;cursor:pointer;border:none;transition:opacity .2s;}
+.abtn:hover{opacity:.8;}
+.savebtn{background:var(--accent-light);color:var(--accent);border:1.5px solid var(--accent-border);}
+.shrbtn{background:var(--dark);color:#fff;}
+
+/* 收藏页 */
+.svcard{background:#fff;border-radius:12px;padding:14px;margin-bottom:10px;box-shadow:0 2px 8px rgba(0,0,0,0.06);display:flex;justify-content:space-between;align-items:flex-start;gap:10px;}
+.svi{flex:1;}
+.svn{display:block;font-size:15px;font-weight:bold;margin-bottom:3px;}
+.svt{display:block;font-size:12px;color:var(--accent);font-style:italic;margin-bottom:5px;}
+.svs{font-size:11px;color:var(--gray);}
+.svdel{background:#fff0f0;border:none;color:#e55;border-radius:7px;padding:5px 11px;font-size:11px;cursor:pointer;flex-shrink:0;}
+
+/* Loading & Toast */
+.loading-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(255,255,255,.88);display:none;flex-direction:column;align-items:center;justify-content:center;z-index:999;}
+.loading-overlay.show{display:flex;}
+.loading-txt{font-size:14px;font-weight:bold;color:var(--accent);}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(16px);background:rgba(0,0,0,.78);color:#fff;padding:9px 20px;border-radius:999px;font-size:13px;opacity:0;transition:all .3s;z-index:9999;pointer-events:none;white-space:nowrap;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+@media(max-width:480px){
+  .grid2{grid-template-columns:1fr;}
+  .agrid{grid-template-columns:1fr 1fr;}
+  .srow{flex-direction:column;gap:8px;}
+}
 </style>
 </head>
 <body>
 
-<!-- Header -->
-<div class="header">
-  <div class="header-inner">
-    <div class="logo">🪞 穿搭魔镜
-      <span>拍照识别 · 智能配搭</span>
-    </div>
-    <div class="weather-btn" onclick="toggleTempInput()">
-      <span id="wIcon">🌡️</span>
-      <div>
-        <div id="wTemp" style="font-size:14px;font-weight:800;line-height:1;">--°C</div>
-        <div id="wDesc" style="font-size:10px;color:var(--g3);">点击输入温度</div>
-      </div>
-    </div>
-  </div>
-  <div class="temp-input-box" id="tempBox">
-    <div class="temp-input-row">
-      <input id="tempVal" type="number" placeholder="输入今天温度 ℃（如：22）"/>
-      <button onclick="applyTemp()">确认</button>
-    </div>
-  </div>
+<!-- Loading -->
+<div class="loading-overlay" id="lo">
+  <div class="spinner" style="width:36px;height:36px;border-width:3px;border-top-color:var(--accent);margin-bottom:12px;"></div>
+  <div class="loading-txt" id="ltxt">生成中...</div>
 </div>
-
-<!-- 页面1：添加衣服 -->
-<div id="page-add" class="page active">
-  <div style="height:16px;"></div>
-  <div class="card">
-    <div class="card-title">📸 拍照识别衣服</div>
-    <img id="preview" class="preview" alt="预览"/>
-    <div class="upload-zone" id="uploadZone">
-      <input type="file" accept="image/*" capture="environment"
-             id="fileInput" onchange="handleFile(event)"/>
-      <div style="font-size:48px;margin-bottom:12px;">📷</div>
-      <div style="font-size:15px;font-weight:700;margin-bottom:6px;">
-        点击拍照 或 选择图片
-      </div>
-      <div style="font-size:12px;color:var(--g3);">
-        通义千问 AI 自动识别衣服信息
-      </div>
-    </div>
-    <div class="ai-box" id="aiBox">
-      <div class="spinner"></div>
-      <div class="ai-tip" id="aiTip">🤖 通义千问识别中，请稍候...</div>
-    </div>
-    <div class="form-box" id="formBox">
-      <div class="ok-banner">✅ 识别完成！请确认或修改下方信息后保存</div>
-      <label class="label">衣服名称</label>
-      <input type="text" id="f-name" class="inp" placeholder="如：白色宽松棉T恤"/>
-      <div class="two">
-        <div>
-          <label class="label">类型</label>
-          <select id="f-type" class="sel">
-            <option value="上装">上装</option>
-            <option value="下装">下装</option>
-            <option value="外套">外套</option>
-            <option value="连衣裙">连衣裙</option>
-            <option value="鞋子">鞋子</option>
-            <option value="配饰">配饰</option>
-          </select>
-        </div>
-        <div>
-          <label class="label">主色</label>
-          <select id="f-color" class="sel">
-            <option value="白">白色</option>
-            <option value="黑">黑色</option>
-            <option value="灰">灰色</option>
-            <option value="米白">米白</option>
-            <option value="卡其">卡其</option>
-            <option value="驼">驼色</option>
-            <option value="牛仔蓝">牛仔蓝</option>
-            <option value="军绿">军绿</option>
-            <option value="红">红色</option>
-            <option value="粉">粉色</option>
-            <option value="蓝">蓝色</option>
-            <option value="紫">紫色</option>
-            <option value="黄">黄色</option>
-            <option value="绿">绿色</option>
-          </select>
-        </div>
-      </div>
-      <div class="two">
-        <div>
-          <label class="label">版型</label>
-          <select id="f-fit" class="sel">
-            <option value="修身">修身</option>
-            <option value="宽松">宽松</option>
-            <option value="直筒">直筒</option>
-            <option value="阔腿">阔腿</option>
-            <option value="oversize">Oversize</option>
-          </select>
-        </div>
-        <div>
-          <label class="label">风格</label>
-          <select id="f-style" class="sel">
-            <option value="Clean Fit">Clean Fit</option>
-            <option value="Old Money">Old Money</option>
-            <option value="Y2K">Y2K</option>
-            <option value="Streetwear">街头</option>
-            <option value="休闲">休闲</option>
-            <option value="正式">正式</option>
-          </select>
-        </div>
-      </div>
-      <div class="two">
-        <div>
-          <label class="label">最低温度℃</label>
-          <input type="number" id="f-min" class="inp" value="10"/>
-        </div>
-        <div>
-          <label class="label">最高温度℃</label>
-          <input type="number" id="f-max" class="inp" value="30"/>
-        </div>
-      </div>
-      <button class="btn btn-dark" onclick="saveCloth()">💾 保存到衣橱</button>
-      <button class="btn btn-ghost" onclick="resetAdd()">重新拍照</button>
-    </div>
-  </div>
-</div>
-
-<!-- 页面2：我的衣橱 -->
-<div id="page-wardrobe" class="page">
-  <div style="height:16px;"></div>
-  <div class="card" style="padding:14px 20px;margin-bottom:14px;">
-    <div style="display:flex;align-items:center;justify-content:space-between;">
-      <div class="card-title" style="margin:0;">👗 我的衣橱</div>
-      <div id="countBadge"
-           style="font-size:12px;font-weight:600;color:var(--g3);
-                  background:var(--g1);padding:4px 12px;border-radius:999px;">
-        0件
-      </div>
-    </div>
-  </div>
-  <div id="wardrobeGrid" class="grid2"></div>
-  <div id="wardrobeEmpty" class="empty">
-    <div class="empty-icon">👗</div>
-    <div class="empty-t">衣橱还是空的</div>
-    <div class="empty-s">去「添加衣服」拍照<br/>把你的衣服存进来！</div>
-  </div>
-</div>
-
-<!-- 页面3：今日穿搭 -->
-<div id="page-outfit" class="page">
-  <div style="height:16px;"></div>
-  <div class="weather-hero">
-    <div style="display:flex;align-items:flex-end;justify-content:space-between;">
-      <div>
-        <div style="font-size:12px;opacity:.6;margin-bottom:6px;">今日温度</div>
-        <div id="heroTemp"
-             style="font-size:48px;font-weight:900;line-height:1;">--°C</div>
-        <div id="heroDesc"
-             style="font-size:13px;opacity:.6;margin-top:6px;">请先输入今日温度</div>
-      </div>
-      <div id="heroIcon" style="font-size:56px;">🌡️</div>
-    </div>
-  </div>
-  <div style="font-size:11px;font-weight:700;color:var(--g3);
-       text-transform:uppercase;letter-spacing:2px;margin-bottom:10px;">
-    今日风格
-  </div>
-  <div class="pills">
-    <div class="pill active" data-style="all" onclick="pickPill(this)">🌟 全部</div>
-    <div class="pill" data-style="Old Money" onclick="pickPill(this)">👑 Old Money</div>
-    <div class="pill" data-style="Clean Fit" onclick="pickPill(this)">🤍 Clean Fit</div>
-    <div class="pill" data-style="Y2K" onclick="pickPill(this)">💿 Y2K</div>
-    <div class="pill" data-style="Streetwear" onclick="pickPill(this)">🔥 街头</div>
-    <div class="pill" data-style="休闲" onclick="pickPill(this)">😊 休闲</div>
-  </div>
-  <button class="btn btn-dark" onclick="genOutfit()" style="margin-bottom:20px;">
-    <span id="genIcon">✨</span>
-    <span id="genText">为我生成今日穿搭</span>
-  </button>
-  <div class="result-box" id="resultBox">
-    <div class="card" style="padding:14px 18px;">
-      <div style="display:flex;align-items:center;gap:8px;">
-        <span style="font-size:12px;font-weight:700;color:var(--g3);">今日配色</span>
-        <div id="colorDots" style="display:flex;gap:6px;align-items:center;"></div>
-        <span id="colorPrinciple"
-              style="margin-left:auto;font-size:11px;font-weight:700;color:#be185d;"></span>
-      </div>
-    </div>
-    <div class="pair" id="outfitPair"></div>
-    <div id="outerSlot" style="display:none;margin-bottom:14px;"></div>
-    <div class="card">
-      <div class="card-title">📋 搭配总评</div>
-      <p id="summaryText"
-         style="font-size:13px;color:var(--g4);line-height:1.8;"></p>
-    </div>
-    <div class="card" style="padding:0;overflow:hidden;">
-      <div style="background:var(--dark);padding:14px 20px;
-                  display:flex;align-items:center;justify-content:space-between;">
-        <span style="color:white;font-weight:800;font-size:14px;">💄 配套造型建议</span>
-        <span id="makeupStyleLabel"
-              style="font-size:12px;color:rgba(255,255,255,.5);"></span>
-      </div>
-      <div id="makeupContent" style="padding:4px 20px 8px;"></div>
-      <div style="padding:0 20px 20px;">
-        <div id="searchLinks" class="link-row"></div>
-      </div>
-    </div>
-  </div>
-</div>
-
 <div class="toast" id="toast"></div>
 
-<!-- 底部导航 -->
-<div class="bottom-nav">
-  <button class="nav-btn active" id="nav-add" onclick="goPage('add')">
-    <span class="nav-icon">📸</span>
-    <span class="nav-label">添加衣服</span>
-  </button>
-  <button class="nav-btn" id="nav-wardrobe" onclick="goPage('wardrobe')">
-    <span class="nav-icon">👗</span>
-    <span class="nav-label">我的衣橱</span>
-  </button>
-  <button class="nav-btn" id="nav-outfit" onclick="goPage('outfit')">
-    <span class="nav-icon">✨</span>
-    <span class="nav-label">今日穿搭</span>
-  </button>
+<!-- 导航 -->
+<nav class="nav">
+  <div class="nav-logo">👗 穿搭魔镜</div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="go('add')">添加</button>
+    <button class="nav-tab" onclick="go('wardrobe')">衣橱</button>
+    <button class="nav-tab" onclick="go('outfit')">穿搭</button>
+    <button class="nav-tab" onclick="go('saved')">收藏</button>
+  </div>
+</nav>
+
+<!-- 添加页 -->
+<div class="page active" id="page-add">
+  <div id="uz" class="upload-zone" onclick="document.getElementById('fi').click()">
+    <span class="u-icon">📷</span>
+    <span class="u-title">点击上传衣服图片</span>
+    <span class="u-sub">上传后 AI 自动识别款式颜色风格</span>
+  </div>
+  <input type="file" id="fi" accept="image/*" style="display:none" onchange="handleFile(this)">
+  <img id="pi" class="preview-img" style="display:none">  <div id="aibox" class="ai-box" style="display:none">
+    <div class="spinner" style="border-top-color:#7c3aed;"></div>
+    <div class="ai-tip">🤖 AI 识别中，请稍候...</div>
+  </div>
+  <div id="okbanner" class="ok-banner" style="display:none">✅ 识别完成！请确认后保存</div>
+  <div id="addForm" style="display:none">
+    <div class="card">
+      <div class="fgroup">
+        <label>衣服名称</label>
+        <input type="text" id="cname" placeholder="如：白色宽松棉质T恤">
+      </div>
+      <div class="grid2">
+        <div class="fgroup">
+          <label>类型</label>
+          <select id="ctype">
+            <option>上装</option><option>下装</option><option>外套</option>
+            <option>连衣裙</option><option>鞋子</option><option>配饰</option>
+          </select>
+        </div>
+        <div class="fgroup">
+          <label>主色</label>
+          <select id="ccolor">
+            <option>白</option><option>黑</option><option>灰</option>
+            <option>米白</option><option>卡其</option><option>驼</option>
+            <option>牛仔蓝</option><option>军绿</option><option>红</option>
+            <option>粉</option><option>蓝</option><option>紫</option>
+            <option>黄</option><option>绿</option>
+          </select>
+        </div>
+      </div>
+      <div class="grid2">
+        <div class="fgroup">
+          <label>版型</label>
+          <select id="cfit">
+            <option>修身</option><option>宽松</option><option>直筒</option>
+            <option>阔腿</option><option>oversize</option>
+          </select>
+        </div>
+        <div class="fgroup">
+          <label>风格</label>
+          <select id="cstyle">
+            <option>Clean Fit</option><option>Old Money</option>
+            <option>Y2K</option><option>Streetwear</option>
+            <option>休闲</option><option>正式</option>
+            <option>Gorpcore</option><option>Balletcore</option>
+            <option>Mob Wife</option>
+          </select>
+        </div>
+      </div>
+      <div class="fgroup">
+        <label>适穿温度范围 (℃)</label>
+        <div class="temp-row">
+          <input type="number" id="tmin" value="10" placeholder="最低">
+          <span class="temp-sep">—</span>
+          <input type="number" id="tmax" value="30" placeholder="最高">
+        </div>
+      </div>
+    </div>
+    <button class="btn" onclick="saveCloth()">💾 保存到衣橱</button>
+    <button class="btn-ghost" onclick="resetAdd()">重新选图</button>
+  </div>
+  <div id="nobtn" style="margin-top:10px;">
+    <button class="btn-ghost" onclick="showForm()">✏️ 不上传图片，直接填写</button>
+  </div>
+</div>
+
+<!-- 衣橱页 -->
+<div class="page" id="page-wardrobe">
+  <div class="wh">
+    <div><span class="pt">我的衣橱</span><span class="ic" id="wcount">0 件</span></div>
+    <button class="btn" style="width:auto;padding:7px 16px;font-size:13px;" onclick="go('add')">+ 添加</button>
+  </div>
+  <div class="filter-row">
+    <button class="fbtn active" onclick="filterW('全部',this)">全部</button>
+    <button class="fbtn" onclick="filterW('上装',this)">上装</button>
+    <button class="fbtn" onclick="filterW('下装',this)">下装</button>
+    <button class="fbtn" onclick="filterW('外套',this)">外套</button>
+    <button class="fbtn" onclick="filterW('连衣裙',this)">连衣裙</button>
+    <button class="fbtn" onclick="filterW('鞋子',this)">鞋子</button>
+    <button class="fbtn" onclick="filterW('配饰',this)">配饰</button>
+  </div>
+  <div class="wgrid" id="wgrid"></div>
+  <div class="empty" id="wempty" style="display:none">
+    <span class="empty-icon">👚</span>
+    <span class="empty-t">衣橱空空的</span>
+    <span class="empty-s">去添加你的第一件衣服吧</span>
+  </div>
+</div>
+
+<!-- 穿搭页 -->
+<div class="page" id="page-outfit">
+  <div class="card">
+    <div class="sh"><span class="st">今日穿搭</span><span class="ss" id="ccount">AI智能生成</span></div>
+    <div class="srow">
+      <div class="si"><label>🌡️ 温度 (℃)</label><input type="number" id="tinput" placeholder="如：22"></div>
+      <div class="si"><label>📍 场合</label>
+        <select id="occ">
+          <option>日常</option><option>上班</option><option>约会</option>
+          <option>逛街</option><option>运动</option><option>聚会</option><option>出行</option>
+        </select>
+      </div>
+      <div class="si"><label>💫 心情</label>
+        <select id="mood">
+          <option>随意</option><option>优雅</option><option>帅气</option>
+          <option>甜美</option><option>酷飒</option><option>知性</option>
+        </select>
+      </div>
+    </div>
+    <button class="btn" id="genbtn" onclick="genOutfits()">✦ 生成今日穿搭</button>
+  </div>
+  <div class="tbar" id="tbar" style="display:none">
+    <div class="tbar-h" onclick="toggleTrend()">
+      <span class="tbar-t">✦ 2025 潮流趋势</span>
+      <span class="tbar-a" id="tarrow">▼</span>
+    </div>
+    <div id="tcontent" style="display:none"></div>
+  </div>
+  <div id="oresults"></div>
+  <div class="empty" id="oempty">
+    <span class="empty-icon">👗</span>
+    <span class="empty-t">准备好了吗？</span>
+    <span class="empty-s">设置温度和场合，点击生成今日穿搭<br>（衣橱需要至少各一件上装和下装）</span>
+  </div>
+</div>
+
+<!-- 收藏页 -->
+<div class="page" id="page-saved">
+  <div class="wh">
+    <div><span class="pt">我的收藏</span><span class="ic" id="svcount">0 套</span></div>
+    <button class="btn-ghost" style="width:auto;padding:7px 14px;font-size:12px;" onclick="clearSaved()">清空</button>
+  </div>
+  <div id="svlist"></div>
+  <div class="empty" id="svempty">
+    <span class="empty-icon">❤️</span>
+    <span class="empty-t">还没有收藏</span>
+    <span class="empty-s">在穿搭页生成搭配后点击收藏</span>
+  </div>
 </div>
 
 <script>
-/* ══════════════════════════════════════
-   ★ 填入你的阿里云百炼 API Key ★
-══════════════════════════════════════ */
+// ══════════════════════════════════════
+// ★★★ 在这里填入你的 API Key ★★★
+// 去 https://dashscope.aliyun.com 注册
+// 控制台 → API-KEY管理 → 创建新的API-KEY
+// ══════════════════════════════════════
 const QWEN_KEY = 'sk-dd62292dd8204889961465ff52f65e66';
-/* ══════════════════════════════════════ */
+// 例如：const QWEN_KEY = 'sk-abc123def456';
 
-let curTemp  = null;
-let curStyle = 'all';
-let wardrobe = [];
-let curImg   = null; // base64
-
-const COLOR_HEX = {
-  '白':'#FFFFFF','黑':'#2D2D2D','灰':'#9CA3AF','米白':'#F5F0E8',
-  '卡其':'#C8B89A','驼':'#C4956A','牛仔蓝':'#6B93C4','军绿':'#6B7C4E',
-  '红':'#DC2626','粉':'#F9A8D4','蓝':'#3B82F6','紫':'#A78BFA',
-  '黄':'#FBBF24','绿':'#4ADE80',
-};
-const COLOR_MATCH = {
-  '白':['黑','灰','卡其','牛仔蓝','粉','驼'],
-  '黑':['灰','白','卡其','牛仔蓝','红'],
-  '灰':['黑','白','卡其','米白','蓝'],
-  '米白':['驼','卡其','灰','黑','绿'],
-  '卡其':['白','米白','灰','黑','军绿'],
-  '驼':['白','米白','黑','卡其','灰'],
-  '牛仔蓝':['白','灰','黑','卡其','米白'],
-  '军绿':['黑','卡其','灰','白','驼'],
-  '红':['黑','白','灰','牛仔蓝'],
-  '粉':['白','灰','米白','黑'],
-  '蓝':['白','灰','黑','卡其'],
-  '紫':['白','灰','黑','米白'],
-  '黄':['白','黑','灰','牛仔蓝'],
-  '绿':['白','黑','卡其','米白'],
-};
-const MAKEUP = {
-  'Old Money':{emoji:'👑',mk:'哑光底妆+裸粉唇釉+细眉',mks:'贵气克制，避免浓妆',
-    hr:'低马尾/发髻/直发帘',hrs:'整洁高贵',acc:'珍珠耳饰·皮带腰封·托特包',q:'Old Money穿搭妆容'},
-  'Clean Fit':{emoji:'🤍',mk:'素颜肌+透明唇蜜+睫毛膏',mks:'干净通透自然美',
-    hr:'空气感直发/半扎发',hrs:'随性自然极简',acc:'简约金链条·帆布袋·小白鞋',q:'Clean Fit极简妆容'},
-  'Y2K':{emoji:'💿',mk:'闪片眼影+果冻唇+高光',mks:'千禧复古闪耀感',
-    hr:'丸子头/双马尾/发夹',hrs:'活泼俏皮Y2K',acc:'蝴蝶结发夹·迷你腰包·厚底鞋',q:'Y2K穿搭妆容教程'},
-  'Streetwear':{emoji:'🔥',mk:'深色眼线+哑光深唇+立体轮廓',mks:'硬朗酷飒街头感',
-    hr:'空气刘海/帽子/脏辫',hrs:'个性鲜明视觉冲击',acc:'棒球帽·机能腰包·厚底靴',q:'街头风穿搭妆容'},
-  '休闲':{emoji:'😊',mk:'自然妆+气色唇色',mks:'清爽舒适日常感',
-    hr:'随性马尾/简单直发',hrs:'轻松随意好打理',acc:'帆布袋·运动鞋·简约手表',q:'休闲穿搭日常妆容'},
-  '正式':{emoji:'💼',mk:'精致职场妆+正红/裸色唇',mks:'干练专业有气场',
-    hr:'低盘发/简洁直发',hrs:'整洁专业职场感',acc:'皮质手提包·皮带·低跟鞋',q:'职场穿搭妆容'},
-  'all':{emoji:'🌟',mk:'日常自然妆+气色唇色',mks:'百搭清爽日常',
-    hr:'随性半扎发/简单直发',hrs:'百搭轻松驾驭',acc:'简约包袋·舒适平底鞋',q:'日常穿搭妆容教程'},
+// ══════════════════════════════════════
+// 数据存储
+// ══════════════════════════════════════
+const DB = {
+  getW(){ return JSON.parse(localStorage.getItem('w')||'[]'); },
+  setW(d){ localStorage.setItem('w',JSON.stringify(d)); },
+  getS(){ return JSON.parse(localStorage.getItem('s')||'[]'); },
+  setS(d){ localStorage.setItem('s',JSON.stringify(d)); },
 };
 
-/* ── 初始化 ── */
-function init(){
-  try{ wardrobe = JSON.parse(localStorage.getItem('wd_v3')||'[]'); }catch(e){ wardrobe=[]; }
-  renderWardrobe();
+// 颜色对照
+const CHX = {'白':'#FFFFFF','黑':'#2D2D2D','灰':'#9CA3AF','米白':'#FAF0E6','卡其':'#C8B89A','驼':'#C4956A','牛仔蓝':'#6B93C4','军绿':'#6B7C4E','红':'#DC2626','粉':'#F9A8D4','蓝':'#3B82F6','紫':'#A78BFA','黄':'#FBBF24','绿':'#4ADE80'};
+
+// ══════════════════════════════════════
+// 潮流数据
+// ══════════════════════════════════════
+const TREND = {
+  macro:['Quiet Luxury 静奢风','Gorpcore 户外机能','Mob Wife 富太太风','Tomato Girl 番茄红','Balletcore 芭蕾核','Sheer Layers 透明叠穿','Linen Everything 亚麻穿搭'],
+  keyPieces:['宽肩西装','桶形牛仔裤','超大托特包','乐福鞋','薄款针织背心','工装裤','长款风衣','蓬蓬半裙'],
+  colors:[{name:'Mocha Mousse',hex:'#9B7B6B',desc:'Pantone 2025年度色'},{name:'Butter Yellow',hex:'#F5E6A3',desc:'黄油奶系'},{name:'Sage Green',hex:'#8FAF8F',desc:'鼠尾草绿'},{name:'Burgundy',hex:'#800020',desc:'勃艮第红'},{name:'Powder Blue',hex:'#B0C4D8',desc:'粉末蓝'},{name:'Warm Camel',hex:'#C4956A',desc:'暖驼色'},{name:'Cobalt Blue',hex:'#0047AB',desc:'钴蓝'},{name:'Off-White',hex:'#FAF0E6',desc:'米白'}],
+};
+
+// ══════════════════════════════════════
+// 配色理论
+// ══════════════════════════════════════
+const CT = {
+  '白':{c:['黑','深灰'],t:['浅灰','米白'],a:['米白','象牙'],ac:['勃艮第红','墨绿','钴蓝'],av:['荧光色']},
+  '黑':{c:['白','米白'],t:['深灰','炭黑'],a:['深灰'],ac:['金','银','勃艮第'],av:['深褐']},
+  '灰':{c:['白','黑'],t:['浅灰','深灰'],a:['银灰'],ac:['勃艮第','芥末黄','钴蓝'],av:[]},
+  '米白':{c:['驼','深棕'],t:['白','奶油'],a:['沙色','卡其'],ac:['黑','勃艮第','墨绿'],av:['亮白']},
+  '卡其':{c:['白','深棕'],t:['浅卡其','深卡其'],a:['驼','米白'],ac:['黑','军绿'],av:[]},
+  '驼':{c:['白','黑'],t:['浅驼','深棕'],a:['卡其','米白'],ac:['勃艮第','黑'],av:['橙色']},
+  '牛仔蓝':{c:['白','米白'],t:['浅牛仔','深靛蓝'],a:['浅蓝'],ac:['白','红','驼'],av:['紫色']},
+  '军绿':{c:['驼','卡其'],t:['浅军绿','深橄榄'],a:['橄榄绿'],ac:['黑','白','驼'],av:[]},
+  '红':{c:['黑','白'],t:['浅红','深红'],a:['玫红'],ac:['黑','白','金'],av:['橙色','粉色']},
+  '粉':{c:['白','灰'],t:['婴儿粉','豆沙粉'],a:['浅粉'],ac:['黑','灰','白'],av:['亮橙']},
+  '蓝':{c:['白','米白'],t:['浅蓝','深蓝'],a:['天蓝'],ac:['白','金','棕'],av:['绿色']},
+  '紫':{c:['白','米白'],t:['浅紫','深紫'],a:['粉紫'],ac:['黑','白','金'],av:['绿色']},
+  '黄':{c:['黑','深蓝'],t:['浅黄','芥末黄'],a:['米白'],ac:['黑','深蓝'],av:['橙色']},
+  '绿':{c:['白','米白'],t:['浅绿','深绿'],a:['军绿'],ac:['白','黑','驼'],av:['红色']},
+};
+
+// ══════════════════════════════════════
+// 配饰规则
+// ══════════════════════════════════════
+const AR = {
+  'Old Money':{bag:'迷你手提包/链条包',shoes:'乐福鞋/芭蕾平底鞋',jewelry:'细链金项链/珍珠耳环',belt:'细皮带（金扣）',hat:'贝雷帽/宽檐草帽',scarf:'丝巾系颈间',tip:'配饰宁少勿多，选一个重点单品'},
+  'Clean Fit':{bag:'帆布托特包/极简小方包',shoes:'小白鞋/运动鞋',jewelry:'细圈耳环/极简项链',belt:'黑色帆布腰带',hat:'棒球帽/渔夫帽',scarf:'不需要',tip:'配饰以实用为主，不超过两种颜色'},
+  'Y2K':{bag:'蝴蝶结包/透明果冻包',shoes:'厚底鞋/方头玛丽珍',jewelry:'蝴蝶结发夹/心形耳环',belt:'细腰带（水钻扣）',hat:'蝴蝶结发带',scarf:'细丝巾系头上',tip:'越多越好，叠穿配饰是Y2K精髓'},
+  'Streetwear':{bag:'斜挎小包/腰包',shoes:'厚底运动鞋/老爹鞋',jewelry:'粗链条项链/大圈耳环',belt:'Logo腰带',hat:'棒球帽（反戴）',scarf:'绑腰间或包带上',tip:'配饰要有Logo或街头感'},
+  '休闲':{bag:'帆布包/草编包',shoes:'帆布鞋/乐福鞋/凉鞋',jewelry:'简单耳钉/细项链',belt:'无或帆布腰带',hat:'棒球帽/草帽',scarf:'不需要',tip:'舒适优先，配饰随意自然'},
+  '正式':{bag:'正装公文包/信封包',shoes:'皮质高跟鞋/牛津鞋',jewelry:'珍珠项链/钻石耳钉',belt:'皮质细腰带',hat:'无',scarf:'真丝方巾',tip:'选经典款，避免夸张设计'},
+  'Gorpcore':{bag:'功能性双肩包/腰包',shoes:'厚底徒步鞋/运动凉鞋',jewelry:'简单耳钉或不戴',belt:'功能性腰带',hat:'渔夫帽/棒球帽',scarf:'不需要',tip:'功能性配件优先，防水材质加分'},
+  'Balletcore':{bag:'蝴蝶结手提包/月牙包',shoes:'芭蕾平底鞋/绑带凉鞋',jewelry:'珍珠发夹/蝴蝶结发带',belt:'缎带腰带蝴蝶结',hat:'丝绒发箍',scarf:'薄纱丝带系包上',tip:'粉色系配饰统一，薄纱和丝绒最对味'},
+  'Mob Wife':{bag:'皮草手提包/大号皮质包',shoes:'细跟高跟鞋/皮质踝靴',jewelry:'大号金项链/夸张耳环',belt:'宽皮带（金属扣）',hat:'皮草帽/大檐帽',scarf:'皮草披肩',tip:'越夸张越好，皮草+金属+皮质三件套'},
+};
+
+// ══════════════════════════════════════
+// 妆容数据库
+// ══════════════════════════════════════
+const MK = {
+  'Old Money':{concept:'静奢哑光·骨相美学',vibe:'低调贵气，像刚从马术俱乐部回来',skin:{base:'哑光粉底液，遮盖毛孔',finish:'定妆蜜粉轻扫',blush:'裸粉色打颧骨',products:['Armani 轻雾粉底液','Laura Mercier 散粉','NARS 腮红 Orgasm']},eye:{style:'深邃骨相眼妆',shadow:{palette:'Urban Decay Naked3',steps:[{area:'打底',color:'Rose Gold',hex:'#B8876A',desc:'全眼裸调底色'},{area:'眼褶',color:'Nooner',hex:'#8B6355',desc:'深咖加深眼褶'},{area:'下眼睑',color:'Burnout',hex:'#C4956A',desc:'轻扫下眼睑'},{area:'卧蚕',color:'Dust',hex:'#E8D5C4',desc:'提亮卧蚕'}]},liner:'深棕眼线笔填充睫毛根',lash:'自然卷翘睫毛膏',brow:'眉笔填稀疏处，自然弧度',products:['Urban Decay Naked3','3CE 眼线笔 Deep Brown']},lip:{style:'裸调哑光·轮廓清晰',options:[{name:'MAC Velvet Teddy',no:'#840',hex:'#8B6355',desc:'经典裸棕Old Money标配'},{name:'YSL 方管 #13',no:'#13',hex:'#C4956A',desc:'裸粉棕提亮肤色'},{name:'NARS Dolce Vita',no:'',hex:'#C08080',desc:'玫瑰裸微显色'}],finish:'哑光，唇线笔描边'},fragrance:'Jo Malone 英国梨与小苍兰',nailColor:'裸粉色或米白色，方形短甲',overall:'整体不超过3个颜色，克制即高级'},
+  'Clean Fit':{concept:'无瑕透明肌·素颜感高级',vibe:'好像天生就这么好看',skin:{base:'水润薄底或BB霜',finish:'保湿喷雾定妆',blush:'浅珊瑚大面积晕染',products:['Dior 气垫 #010','CANMAKE 棉花糖腮红']},eye:{style:'透明感裸妆',shadow:{palette:'Lunasol 晶钻四色眼影',steps:[{area:'打底',color:'米白珠光',hex:'#FAF0E6',desc:'全眼打底提亮'},{area:'眼褶',color:'浅棕',hex:'#C4A882',desc:'淡淡加深'},{area:'内眼角',color:'香槟金',hex:'#F5E6A3',desc:'提亮内眼角'},{area:'下眼睑',color:'裸粉',hex:'#F0C8B4',desc:'轻晕染透明感'}]},liner:'白色眼线笔内眼线',lash:'透明睫毛膏定型',brow:'染眉膏染浅，毛流感',products:['Lunasol 晶钻眼影','资生堂 透明睫毛膏']},lip:{style:'果冻水润',options:[{name:'Fenty Mauve Wifey',no:'',hex:'#C8A0A0',desc:'脏粉通透'},{name:'Rom&nd 果冻唇釉 #20',no:'#20',hex:'#FFB6B6',desc:'婴儿粉水润'},{name:'Laneige 唇膜 Berry',no:'',hex:'#E8A0A0',desc:'莓粉保湿'}],finish:'唇釉或唇蜜，水润感'},fragrance:'Aesop Marrakech / CK One',nailColor:'透明水晶甲或裸粉',overall:'妆感越轻越好，重点是皮肤状态'},
+  'Y2K':{concept:'千禧闪耀·Y2K复兴妆',vibe:'像Paris Hilton开了派对',skin:{base:'粉底全覆盖，高光打T区',finish:'闪片散粉闪闪发光',blush:'Hot pink大面积晕染',products:['Charlotte Tilbury 高光棒','Fenty Trophy Wife 高光']},eye:{style:'闪片切割眼',shadow:{palette:'Pat McGrath Mothership III',steps:[{area:'打底',color:'银白闪片',hex:'#E8E8E8',desc:'眼皮铺银白闪粉'},{area:'外眼角',color:'蓝紫',hex:'#A78BFA',desc:'向外晕染'},{area:'下眼睑',color:'亮蓝',hex:'#60A5FA',desc:'Y2K经典蓝'},{area:'内眼角',color:'纯银',hex:'#C0C0C0',desc:'高光放大眼睛'}]},liner:'白色内眼线，蓝色外眼角',lash:'超浓密假睫毛',brow:'极细一字眉，染浅棕',products:['Pat McGrath Mothership III','Ardell 假睫毛 #120']},lip:{style:'玻璃唇·糖果色',options:[{name:'MAC Spice + 透明唇釉',no:'Spice',hex:'#C08080',desc:'裸唇线+唇釉Y2K玻璃唇'},{name:'Fenty Fu$$y 唇釉',no:'',hex:'#FF9EBC',desc:'芭比粉超Y2K'},{name:'Benefit Benetint',no:'',hex:'#E87070',desc:'西瓜红染唇'}],finish:'大量唇釉堆叠，越闪越好'},fragrance:'Britney Spears Fantasy',nailColor:'法式甲加闪片/糖果色',overall:'亮片+珠光+高光，闪闪惹人爱'},
+  'Streetwear':{concept:'硬核酷飒·街头主宰',vibe:'像刚从Supreme门口走出来',skin:{base:'哑光粉底控油',finish:'定妆喷雾持久',blush:'深咖修容代替腮红',products:['Make Up For Ever HD粉底','Hourglass 定妆喷雾']},eye:{style:'暗黑烟熏眼',shadow:{palette:'Urban Decay Vice 暗黑盘',steps:[{area:'打底',color:'哑光深棕',hex:'#5D4037',desc:'整个眼窝深棕'},{area:'眼褶',color:'哑光黑',hex:'#1A1A1A',desc:'眼褶至黑色'},{area:'下眼睑',color:'烟灰',hex:'#616161',desc:'大面积烟熏'},{area:'泪沟',color:'银色',hex:'#C0C0C0',desc:'少量提亮'}]},liner:'黑色眼线液拉长眼尾',lash:'超浓密睫毛膏堆2-3遍',brow:'平直粗眉，硬朗感',products:['Stila Stay All Day眼线液','Maybelline Lash Sensational']},lip:{style:'深色哑光唇',options:[{name:'MAC Diva',no:'Diva',hex:'#5D1A1A',desc:'深酒红最硬核'},{name:'NYX 哑光 Siren',no:'Siren',hex:'#8B0000',desc:'黑红街头感'},{name:'Lime Crime Black Velvet',no:'',hex:'#1A0A0A',desc:'黑色唇膏极限'}],finish:'哑光，不要光泽'},fragrance:'Byredo Bal d\'Afrique',nailColor:'黑色或深酒红，长尖形',overall:'烟熏眼或深唇色二选一'},
+  '休闲':{concept:'慵懒日系·effortless chic',vibe:'随手出门也好看',skin:{base:'BB霜轻薄自然',finish:'轻拍定妆',blush:'珊瑚橘轻拍双颊鼻梁',products:['AHC素颜霜','CLIO 杀手腮红 #02']},eye:{style:'元气日系眼妆',shadow:{palette:'CLIO Pro Eye Palette Air',steps:[{area:'打底',color:'米色',hex:'#F5E6D3',desc:'全眼铺底'},{area:'眼褶',color:'浅橘棕',hex:'#D4956A',desc:'自然加深'},{area:'下眼睑',color:'浅橘',hex:'#F0B090',desc:'晕染橘调'},{area:'卧蚕',color:'白珠光',hex:'#FAFAFA',desc:'可爱感提亮'}]},liner:'棕色眼线笔细细描',lash:'睫毛膏一遍自然',brow:'眉粉轻扫自然感',products:['CLIO Pro Eye Palette','innisfree 眉粉']},lip:{style:'咬唇感元气色',options:[{name:'Peripera 咬唇釉 #1',no:'#1',hex:'#E87878',desc:'西瓜红咬唇活力'},{name:'3CE 雾面 Chilling',no:'',hex:'#C87878',desc:'豆沙玫瑰韩系'},{name:'Benefit 染唇液 Rose',no:'',hex:'#E89090',desc:'玫瑰粉染唇'}],finish:'咬唇感或水染感'},fragrance:'Sol de Janeiro 62号',nailColor:'奶油裸色或橘粉，圆形短甲',overall:'妆容简单，重点在腮红和唇色活力感'},
+  '正式':{concept:'都市精英·职场制霸',vibe:'走进会议室全场安静',skin:{base:'持久粉底，全天控油',finish:'散粉+定妆喷雾双重锁',blush:'玫瑰粉轻扫颧骨',products:['Estee Lauder 持妆粉底','Laura Mercier 散粉']},eye:{style:'知性深邃职场眼',shadow:{palette:'Charlotte Tilbury The Sophisticate',steps:[{area:'打底',color:'香槟米',hex:'#F5E6C8',desc:'全眼打底'},{area:'眼褶',color:'浅咖棕',hex:'#A0785A',desc:'加深轮廓'},{area:'外眼角',color:'深棕',hex:'#6B4226',desc:'拉长眼形'},{area:'下眼睑',color:'浅棕',hex:'#C4956A',desc:'轻扫立体'}]},liner:'黑色眼线液干净利落',lash:'浓密纤长根根分明',brow:'标准拱形眉，眉峰清晰',products:['Charlotte Tilbury The Sophisticate','Shu Uemura 眼线']},lip:{style:'气场唇·玫瑰豆沙',options:[{name:'YSL 方管 #01',no:'#01',hex:'#C87878',desc:'玫瑰裸粉职场百搭'},{name:'Armani 红管 #405',no:'#405',hex:'#B06060',desc:'豆沙玫瑰高级感'},{name:'MAC Twig',no:'Twig',hex:'#A0706A',desc:'裸玫瑰经典'}],finish:'哑光或缎面，轮廓清晰'},fragrance:'Chanel Coco Mademoiselle',nailColor:'裸粉色或深玫瑰红，方形中长甲',overall:'整洁利落，细节精致，不夸张不失礼'},
+  'Gorpcore':{concept:'机能户外·野性自然',vibe:'从Alps徒步回来但超有型',skin:{base:'防晒隔离代替粉底',finish:'防水定妆喷雾',blush:'橘棕晒伤感，鼻梁颧骨',products:['Supergoop SPF50防晒','Benefit Hoola修容']},eye:{style:'户外健康自然眼',shadow:{palette:'Rare Beauty 大地系眼影',steps:[{area:'打底',color:'裸棕',hex:'#D4A882',desc:'全眼自然底色'},{area:'眼褶',color:'橄榄棕',hex:'#8B7355',desc:'轻加深自然感'},{area:'下眼睑',color:'浅棕',hex:'#C4956A',desc:'轻轻晕染'},{area:'提亮',color:'米白',hex:'#FAF0E6',desc:'眉骨内眼角提亮'}]},liner:'棕色或不用',lash:'防水睫毛膏一遍',brow:'自然毛流感梳理整齐',products:['Rare Beauty眼影','Maybelline防水睫毛膏']},lip:{style:'户外裸唇防晒款',options:[{name:'Fresh 防晒润唇膏 SPF20',no:'',hex:'#E8C4A0',desc:'裸色防晒户外必备'},{name:'Drunk Elephant唇膜',no:'',hex:'#F0B090',desc:'橘粉保湿健康感'},{name:"Burt's Bees有色润唇膏",no:'',hex:'#D4906A',desc:'自然橘棕户外裸唇'}],finish:'保湿光泽，简单自然'},fragrance:'Aesop Tacit',nailColor:'裸色或大地色，短甲实用',overall:'妆容以护肤感为主，防水防晒是关键'},
+  'Balletcore':{concept:'芭蕾粉嫩·少女梦境',vibe:'从芭蕾排练室走出来的女主角',skin:{base:'粉底偏粉白调，如瓷娃娃',finish:'蜜粉定妆粉嫩哑光',blush:'玫瑰粉大面积晕染到鼻梁',products:['Shiseido气垫粉底','Rare Beauty液体腮红 Happy']},eye:{style:'薄纱玫瑰芭蕾少女眼',shadow:{palette:'Huda Beauty Pastel Obsessions',steps:[{area:'打底',color:'薄荷白',hex:'#F0F8F0',desc:'全眼淡底色'},{area:'眼褶',color:'玫瑰粉',hex:'#F0A8B8',desc:'粉色大面积晕染'},{area:'外眼角',color:'浅紫粉',hex:'#D8A8C8',desc:'渐变浅紫粉'},{area:'卧蚕',color:'白珠光',hex:'#FAFAFA',desc:'白色高光芭蕾感'}]},liner:'粉色或细白内眼线',lash:'纤细翘睫毛膏或粉色睫毛膏',brow:'浅棕或浅粉，柔和弯眉',products:['Huda Beauty Pastel Obsessions','Etude粉色睫毛膏']},lip:{style:'玫瑰花瓣唇',options:[{name:'Charlotte Tilbury Pillow Talk',no:'',hex:'#D4A0A8',desc:'裸粉玫瑰最芭蕾'},{name:'Dior 芭蕾粉唇膏',no:'',hex:'#E8A0B0',desc:'芭蕾粉经典少女'},{name:'NARS Schiap',no:'',hex:'#E87090',desc:'明亮玫红芭蕾能量'}],finish:'缎面或轻哑光，花瓣质感'},fragrance:'Glossier You',nailColor:'法式粉色或薰衣草，椭圆中甲',overall:'腮红是灵魂，多晕染呈现少女红晕'},
+  'Mob Wife':{concept:'黑色权力·暗黑奢靡',vibe:'意大利黑手党太太，危险又迷人',skin:{base:'全覆盖厚底，白皙或古铜',finish:'高光打颧骨强调立体',blush:'深玫瑰或砖红斜扫颧骨',products:['Giorgio Armani 丝绒粉底','Charlotte Tilbury 高光棒']},eye:{style:'猫眼烟熏·权力眼妆',shadow:{palette:'Tom Ford Noir Anthracite',steps:[{area:'打底',color:'深金棕',hex:'#8B6914',desc:'全眼铺深金底色'},{area:'眼褶',color:'黑咖',hex:'#2D1A0A',desc:'眼褶深烟熏'},{area:'外眼角',color:'哑光黑',hex:'#1A1A1A',desc:'向外拉猫眼'},{area:'下眼睑',color:'金铜珠光',hex:'#C8962A',desc:'铺金铜妩媚感'}]},liner:'黑色眼线液猫眼上扬45度',lash:'超浓密戏剧感假睫毛必须贴',brow:'浓密深色粗眉，眉峰明显',products:['Tom Ford Noir Anthracite','Stila 眼线液','Ardell假睫毛 #113']},lip:{style:'深色权力唇',options:[{name:'MAC Antique Velvet',no:'',hex:'#6B2020',desc:'深酒红天鹅绒标配'},{name:'NARS Scarlet Empress',no:'',hex:'#8B0A0A',desc:'深红近黑权力感'},{name:'Fenty Beauty #529',no:'#529',hex:'#7A1A2E',desc:'暗樱桃性感危险'}],finish:'哑光或天鹅绒，轮廓锐利'},fragrance:'Tom Ford Black Orchid',nailColor:'深红或黑色，超长尖形甲',overall:'浓烈、戏剧、致命，每处都要有存在感'},
+};
+
+// ══════════════════════════════════════
+// 评分算法
+// ══════════════════════════════════════
+function cscore(c1,c2){
+  const t=CT[c1];if(!t) return 60;
+  if(t.c?.includes(c2))  return 95;
+  if(t.t?.includes(c2))  return 90;
+  if(t.a?.includes(c2))  return 85;
+  if(t.ac?.includes(c2)) return 80;
+  if(t.av?.includes(c2)) return 20;
+  return 60;
+}
+function sscore(s1,s2){
+  const m={'Old Money':['Old Money','Clean Fit','正式'],'Clean Fit':['Clean Fit','Old Money','休闲'],'Y2K':['Y2K','Streetwear','Balletcore'],'Streetwear':['Streetwear','Y2K','Gorpcore'],'休闲':['休闲','Clean Fit','Gorpcore'],'正式':['正式','Old Money','Clean Fit'],'Gorpcore':['Gorpcore','Streetwear','休闲'],'Balletcore':['Balletcore','Y2K','休闲'],'Mob Wife':['Mob Wife','Old Money','Streetwear']};
+  if(s1===s2) return 100;
+  if(m[s1]?.includes(s2)) return 85;
+  return 50;
+}
+function tscore(item,temp){
+  if(temp===''||temp===null||temp===undefined) return 80;
+  const[mn,mx]=item.tempRange||[0,40];
+  const t=Number(temp);
+  if(t>=mn&&t<=mx) return 100;
+  return Math.max(0,100-(t<mn?mn-t:t-mx)*10);
 }
 
-/* ── 页面切换 ── */
-function goPage(name){
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
-  document.getElementById('page-'+name).classList.add('active');
-  document.getElementById('nav-'+name).classList.add('active');
-  if(name==='wardrobe') renderWardrobe();
-  if(name==='outfit') syncWeather();
+// ══════════════════════════════════════
+// 推荐逻辑
+// ══════════════════════════════════════
+function getAR(style,color,occasion){
+  const r=AR[style]||AR['休闲'];
+  const t=CT[color]||{};
+  return{...r,colorAdvice:{accent:`点缀色建议：${t.ac?.[0]||'黑色'}`,tonal:`同色系：${t.t?.[0]||'同色系'}`,metal:(color==='黑'||color==='灰')?'金属选：银色/白金':'金属选：金色/玫瑰金'}};
+}
+function getMK(style,occasion,mood,color){
+  let ms=style;
+  if(['上班','正式'].includes(occasion)&&!['Old Money','Clean Fit','正式'].includes(style)) ms='正式';
+  else if(occasion==='约会'&&style==='休闲') ms='Balletcore';
+  else if(['运动'].includes(occasion)) ms='Gorpcore';
+  if(mood==='甜美'&&!['Y2K','Balletcore'].includes(ms)) ms='Balletcore';
+  else if(mood==='酷飒'&&ms==='休闲') ms='Streetwear';
+  else if(mood==='优雅'&&ms==='Streetwear') ms='Old Money';
+  const mk=MK[ms]||MK['Clean Fit'];
+  const cn={'白':'白色配任何妆都好，用唇色制造焦点','黑':'黑色服装建议加强眼妆或唇妆，二选一','红':'红色服装配裸唇最安全','粉':'粉色服装配同色系唇色更和谐','蓝':'蓝色配珊瑚橘唇色，暖冷对比时髦','绿':'绿色配玫瑰粉唇色','驼':'驼色配裸棕唇，打造完美裸色系','军绿':'军绿配橘棕唇，Gorpcore户外感','牛仔蓝':'牛仔蓝配裸粉或珊瑚，清新通透','卡其':'卡其配裸棕或砖红，大地色系高级','米白':'米白配裸粉或玫瑰色，柔和优雅','灰':'灰色配任何唇色，深唇色更有气场','紫':'紫色配裸唇或浅粉，避免唇色太抢','黄':'黄色配橘色或裸棕，暖色系统一'};
+  let rl=mk.lip.options[0];
+  if(['红','粉'].includes(color)) rl=mk.lip.options.find(l=>parseInt(l.hex.slice(1,3),16)>200)||mk.lip.options[0];
+  else if(['黑','灰'].includes(color)) rl=mk.lip.options[mk.lip.options.length-1];
+  return{...mk,recommendedLip:rl,colorNote:cn[color]||'根据整体风格选择妆容重点'};
+}
+function getTT(combo){
+  const tags=[];
+  const tm={'Old Money':{label:'Quiet Luxury',color:'#C4956A'},'Gorpcore':{label:'Gorpcore',color:'#6B7C4E'},'Y2K':{label:'Y2K Revival',color:'#A78BFA'},'Clean Fit':{label:'Minimalist',color:'#9CA3AF'},'Balletcore':{label:'Balletcore',color:'#F9A8D4'},'Mob Wife':{label:'Mob Wife',color:'#8B0020'},'Streetwear':{label:'Streetwear',color:'#333'}};
+  if(tm[combo.top.style]) tags.push(tm[combo.top.style]);
+  if(combo.score>=88) tags.push({label:'✦ 编辑推荐',color:'#C9A99A'});
+  return tags;
+}
+function getCP(combo){
+  const used=[combo.top.color,combo.bottom.color,combo.shoe?.color,combo.accessory?.color].filter(Boolean);
+  const t=CT[combo.top.color]||{};
+  const suggest=t.ac?.[0];
+  const p=used.map(c=>({name:c,hex:CHX[c]||'#E5E7EB',isSuggest:false}));
+  if(suggest&&!used.includes(suggest)) p.push({name:suggest,hex:CHX[suggest]||'#E5E7EB',isSuggest:true});
+  return p;
+}
+function getName(combo){
+  const n={'Old Money':['Old Money 经典局','骨相美学','静奢气场'],'Clean Fit':['Clean Fit 素净日','极简主义','透明感造型'],'Y2K':['Y2K 千禧复古','闪耀千禧局','糖果梦境'],'Streetwear':['街头机能风','硬核街头局'],'休闲':['慵懒周末局','effortless chic'],'正式':['都市精英感','职场制霸'],'Gorpcore':['户外机能局','Alpine风格'],'Balletcore':['芭蕾少女梦','薄纱粉嫩局'],'Mob Wife':['Mob Wife 气场','暗黑奢靡局']};
+  const p=n[combo.top.style]||['时尚造型'];
+  return p[Math.floor(Math.random()*p.length)];
+}
+function getTip(combo,occasion,mood){
+  const t={'Old Money':['骨相美学，低调即奢华','静奢气场，无声胜有声'],'Clean Fit':['极简即美，少即是多','透明感造型，天生好看'],'Y2K':['千禧闪耀，派对女主角','Y2K复兴，糖果梦境'],'Streetwear':['街头主宰，硬核出街','酷飒街头，态度即穿搭'],'休闲':['慵懒美学，effortless chic','随手出门也好看'],'正式':['职场制霸，气场全开','都市精英，干练利落'],'Gorpcore':['户外机能，野性自然','机能美学，功能即时尚'],'Balletcore':['芭蕾少女梦，薄纱粉嫩','优雅又甜美，梦幻加身'],'Mob Wife':['Mob Wife气场，权力美学','暗黑奢靡，致命吸引力']};
+  const p=t[combo.top.style]||['今日穿搭，美美出门'];
+  return p[Math.floor(Math.random()*p.length)];
 }
 
-/* ── 温度输入 ── */
-function toggleTempInput(){
-  const b = document.getElementById('tempBox');
-  b.style.display = b.style.display==='none'||b.style.display==='' ? 'block' : 'none';
-}
-function applyTemp(){
-  const v = parseInt(document.getElementById('tempVal').value,10);
-  if(isNaN(v)||v<-20||v>50){ showToast('请输入 -20 到 50 之间的温度'); return; }
-  curTemp = v;
-  const icon = v>=30?'☀️':v>=22?'⛅':v>=15?'🌤️':v>=5?'🧥':'❄️';
-  document.getElementById('wIcon').textContent  = icon;
-  document.getElementById('wTemp').textContent  = v+'°C';
-  document.getElementById('wDesc').textContent  = v>=30?'炎热':v>=22?'温暖':v>=15?'凉爽':v>=5?'偏冷':'寒冷';
-  document.getElementById('tempBox').style.display = 'none';
-  syncWeather();
-  showToast('✅ 温度已设为 '+v+'°C');
-}
-function syncWeather(){
-  if(curTemp===null) return;
-  const v    = curTemp;
-  const icon = v>=30?'☀️':v>=22?'⛅':v>=15?'🌤️':v>=5?'🧥':'❄️';
-  const desc = v>=30?'炎热，注意防晒':v>=22?'温暖舒适':v>=15?'凉爽，可加薄外套':v>=5?'偏冷，建议穿外套':'寒冷，注意保暖';
-  document.getElementById('heroTemp').textContent = v+'°C';
-  document.getElementById('heroDesc').textContent = desc;
-  document.getElementById('heroIcon').textContent = icon;
-}
-
-/* ── 图片上传 ── */
-function handleFile(e){
-  const file = e.target.files[0];
-  if(!file){ return; }
-  const reader = new FileReader();
-  reader.onload = ev => {
-    const full  = ev.target.result;
-    curImg      = full.split(',')[1];
-    const mimeMatch = full.match(/^data:([^;]+);base64,/);
-    const mime  = mimeMatch ? mimeMatch[1] : 'image/jpeg';
-    document.getElementById('preview').src          = full;
-    document.getElementById('preview').style.display = 'block';
-    document.getElementById('uploadZone').style.display = 'none';
-    callQwen(curImg, mime);
-  };
-  reader.readAsDataURL(file);
-}
-
-/* ── 调用通义千问 qwen-vl-plus ── */
-async function callQwen(b64, mime){
-  if(!QWEN_KEY || QWEN_KEY==='在这里填入你的阿里云Key'){
-    showToast('⚠️ 请先填入阿里云API Key');
-    showForm({});
-    return;
-  }
-
-  document.getElementById('aiBox').style.display   = 'block';
-  document.getElementById('formBox').style.display = 'none';
-  document.getElementById('aiTip').textContent     = '🤖 通义千问识别中，请稍候...';
-
-  const prompt = `你是专业时尚造型师。仔细看图片中的衣服，只输出下面的JSON，不要任何其他文字或代码块标记：
-{"name":"衣服名称，具体一点，如白色宽松棉质短袖T恤","type":"上装或下装或外套或连衣裙或鞋子或配饰","color":"白或黑或灰或米白或卡其或驼或牛仔蓝或军绿或红或粉或蓝或紫或黄或绿","fit":"修身或宽松或直筒或阔腿或oversize","style":"Clean Fit或Old Money或Y2K或Streetwear或休闲或正式","tempMin":数字,"tempMax":数字}
-温度规则：短袖20-35，长袖衬衫15-28，薄卫衣10-25，厚毛衣5-18，外套夹克8-22，羽绒服大衣-5-12，短裙短裤22-38，长裤5-28。若图中无衣服则name填"未识别到衣服"。`;
-
-  try{
-    const res = await fetch(
-      'https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions',
-      {
-        method:'POST',
-        headers:{
-          'Content-Type':'application/json',
-          'Authorization':'Bearer '+QWEN_KEY
-        },
-        body: JSON.stringify({
-          model:'qwen-vl-plus',
-          messages:[{
-            role:'user',
-            content:[
-              { type:'image_url', image_url:{ url:'data:'+mime+';base64,'+b64 } },
-              { type:'text', text:prompt }
-            ]
-          }],
-          max_tokens:300,
-          temperature:0.1
-        })
-      }
-    );
-
-    if(!res.ok){
-      const e = await res.json().catch(()=>({}));
-      throw new Error((e.error&&e.error.message)||'HTTP '+res.status);
+function genCombos(wardrobe,temp,occasion,mood){
+  const tops=wardrobe.filter(i=>['上装','外套'].includes(i.type));
+  const bots=wardrobe.filter(i=>['下装','连衣裙'].includes(i.type));
+  const shoes=wardrobe.filter(i=>i.type==='鞋子');
+  const accs=wardrobe.filter(i=>i.type==='配饰');
+  if(!tops.length||!bots.length) return null;
+  const combos=[];
+  for(const top of tops){
+    for(const bot of bots){
+      const cs=cscore(top.color,bot.color);
+      const ss=sscore(top.style,bot.style);
+      const ts=tscore(top,temp);
+      const bs=tscore(bot,temp);
+      const score=Math.round(cs*.35+ss*.30+ts*.175+bs*.175);
+      let bestShoe=null,bss=0;
+      for(const s of shoes){const sc=cscore(bot.color,s.color)*.5+sscore(bot.style,s.style)*.3+tscore(s,temp)*.2;if(sc>bss){bss=sc;bestShoe=s;}}
+      let bestAcc=null,bas=0;
+      for(const a of accs){const sc=cscore(top.color,a.color)*.5+sscore(top.style,a.style)*.5;if(sc>bas){bas=sc;bestAcc=a;}}
+      combos.push({top,bottom:bot,shoe:bestShoe,accessory:bestAcc,score,accessoryRec:getAR(top.style,top.color,occasion),makeupRec:getMK(top.style,occasion,mood,top.color)});
     }
+  }
+  combos.sort((a,b)=>b.score-a.score);
+  return combos;
+}
 
-    const data = await res.json();
-    const raw  = (data.choices&&data.choices[0]&&data.choices[0].message&&data.choices[0].message.content)||'';
-
-    /* 从返回文本里提取第一个 JSON 对象 */
-    const match = raw.match(/\{[\s\S]*?\}/);
-    if(!match) throw new Error('返回内容无法解析：'+raw.slice(0,80));
-    const obj = JSON.parse(match[0]);
-
-    document.getElementById('aiBox').style.display = 'none';
-    showForm(obj);
-    if(obj.name==='未识别到衣服'){
-      showToast('⚠️ 没识别到衣服，请手动填写');
+// ══════════════════════════════════════
+// AI 识别图片（通义千问VL）
+// ══════════════════════════════════════
+async function recognizeImg(imgData){
+  document.getElementById('aibox').style.display='block';
+  document.getElementById('addForm').style.display='none';
+  const base64=imgData.split(',')[1];
+  const mime=imgData.split(';')[0].split(':')[1];
+  const prompt=`你是专业时尚造型师。仔细观察图片中的衣服，只输出JSON，不要其他任何文字：
+{"name":"衣服名称（中文，颜色+款式+材质）","type":"上装或下装或外套或连衣裙或鞋子或配饰","color":"白或黑或灰或米白或卡其或驼或牛仔蓝或军绿或红或粉或蓝或紫或黄或绿","fit":"修身或宽松或直筒或阔腿或oversize","style":"Clean Fit或Old Money或Y2K或Streetwear或休闲或正式或Gorpcore或Balletcore或Mob Wife","tempMin":数字,"tempMax":数字}`;
+  try{
+    const res=await fetch('https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+QWEN_KEY},
+      body:JSON.stringify({
+        model:'qwen-vl-plus',
+        messages:[{role:'user',content:[
+          {type:'image_url',image_url:{url:`data:${mime};base64,${base64}`}},
+          {type:'text',text:prompt}
+        ]}],
+        max_tokens:300,
+        temperature:0.1,
+      })
+    });
+    const data=await res.json();
+    // 检查是否有错误返回
+    if(data.error){
+      console.warn('API错误:',data.error);
+      document.getElementById('aibox').style.display='none';
+      showForm();
+      toast('AI识别遇到问题，请手动填写');
+      return;
+    }
+    const raw=data.choices?.[0]?.message?.content||'';
+    const match=raw.match(/\{[\s\S]*?\}/);
+    document.getElementById('aibox').style.display='none';
+    if(match){
+      fillForm(JSON.parse(match[0]));
+      document.getElementById('okbanner').style.display='block';
     } else {
-      showToast('✅ 识别成功：'+obj.name);
+      showForm();
+      toast('未能识别，请手动填写');
     }
-
-  } catch(err){
-    console.error('Qwen error:',err);
-    document.getElementById('aiTip').textContent = '❌ 识别失败：'+err.message;
-    setTimeout(()=>{
-      document.getElementById('aiBox').style.display = 'none';
-      showForm({});
-      showToast('识别失败，请手动填写');
-    },2000);
-  }
-}
-
-/* ── 填表单 ── */
-function showForm(r){
-  function setSel(id,val){
-    const el=document.getElementById(id);
-    for(const o of el.options){ if(o.value===val){el.value=val;return;} }
-  }
-  document.getElementById('f-name').value = r.name||'';
-  setSel('f-type',  r.type  ||'上装');
-  setSel('f-color', r.color ||'白');
-  setSel('f-fit',   r.fit   ||'修身');
-  setSel('f-style', r.style ||'Clean Fit');
-  document.getElementById('f-min').value = r.tempMin!==undefined?r.tempMin:10;
-  document.getElementById('f-max').value = r.tempMax!==undefined?r.tempMax:30;
-  document.getElementById('formBox').style.display = 'block';
-}
-
-/* ── 保存衣服 ── */
-function saveCloth(){
-  const name = document.getElementById('f-name').value.trim();
-  if(!name){ showToast('⚠️ 请填写衣服名称'); return; }
-  const mn = parseInt(document.getElementById('f-min').value,10);
-  const mx = parseInt(document.getElementById('f-max').value,10);
-  if(mn>=mx){ showToast('⚠️ 最低温度要小于最高温度'); return; }
-
-  const item = {
-    id:      Date.now(),
-    name,
-    type:    document.getElementById('f-type').value,
-    color:   document.getElementById('f-color').value,
-    fit:     document.getElementById('f-fit').value,
-    style:   document.getElementById('f-style').value,
-    tempRange:[mn,mx],
-    img:     curImg||null,
-    date:    new Date().toLocaleDateString('zh-CN'),
-  };
-
-  wardrobe.push(item);
-  persist();
-  renderWardrobe();
-  resetAdd();
-  showToast('✅ 已保存！');
-  setTimeout(()=>goPage('wardrobe'),700);
-}
-
-/* ── 持久化 ── */
-function persist(){
-  try{
-    localStorage.setItem('wd_v3',JSON.stringify(wardrobe));
   }catch(e){
-    const lite = wardrobe.map(c=>({...c,img:null}));
-    localStorage.setItem('wd_v3',JSON.stringify(lite));
-    showToast('⚠️ 存储空间不足，图片未保存');
+    console.error(e);
+    document.getElementById('aibox').style.display='none';
+    showForm();
+    toast('网络异常，请手动填写');
   }
 }
 
-/* ── 渲染衣橱 ── */
-function renderWardrobe(){
-  const grid  = document.getElementById('wardrobeGrid');
-  const empty = document.getElementById('wardrobeEmpty');
-  document.getElementById('countBadge').textContent = wardrobe.length+'件';
-  if(!wardrobe.length){
-    grid.innerHTML='';
-    empty.style.display='block';
-    return;
-  }
+// ══════════════════════════════════════
+// 渲染函数
+// ══════════════════════════════════════
+function renderW(filter='全部'){
+  const w=DB.getW();
+  document.getElementById('wcount').textContent=w.length+' 件';
+  const f=filter==='全部'?w:w.filter(i=>i.type===filter);
+  const grid=document.getElementById('wgrid');
+  const empty=document.getElementById('wempty');
+  if(!f.length){grid.innerHTML='';empty.style.display='block';return;}
   empty.style.display='none';
-  grid.innerHTML = wardrobe.map(c=>{
-    const hex = COLOR_HEX[c.color]||'#e5e7eb';
-    const thumb = c.img
-      ? `<img class="cloth-thumb" src="data:image/jpeg;base64,${c.img}" alt="${c.name}"/>`
-      : `<div class="cloth-ph">${tEmoji(c.type)}</div>`;
-    return `
-      <div class="cloth-card">
-        <button class="del-btn" onclick="event.stopPropagation();delCloth(${c.id})">✕</button>
-        <div style="height:3px;background:${hex};"></div>
-        ${thumb}
-        <div class="cloth-info">
-          <div class="cloth-name">${c.name}</div>
-          <div class="tags">
-            <span class="tag t-type">${c.type}</span>
-            <span class="tag t-color" style="display:inline-flex;align-items:center;gap:3px;">
-              <span style="width:7px;height:7px;border-radius:50%;background:${hex};
-                           border:1px solid rgba(0,0,0,.1);display:inline-block;"></span>
-              ${c.color}
-            </span>
-            <span class="tag t-style">${c.style}</span>
-          </div>
-        </div>
-      </div>`;
-  }).join('');
-}
-
-function tEmoji(t){
-  return {上装:'👕',下装:'👖',外套:'🧥',连衣裙:'👗',鞋子:'👟',配饰:'👜'}[t]||'👔';
-}
-function delCloth(id){
-  if(!confirm('确定删除这件衣服？')) return;
-  wardrobe = wardrobe.filter(c=>c.id!==id);
-  persist();
-  renderWardrobe();
-  showToast('🗑️ 已删除');
-}
-
-/* ── 重置添加页 ── */
-function resetAdd(){
-  curImg=null;
-  document.getElementById('preview').style.display='none';
-  document.getElementById('preview').src='';
-  document.getElementById('uploadZone').style.display='block';
-  document.getElementById('aiBox').style.display='none';
-  document.getElementById('formBox').style.display='none';
-  document.getElementById('fileInput').value='';
-}
-
-/* ── 风格选择 ── */
-function pickPill(el){
-  document.querySelectorAll('.pill').forEach(p=>p.classList.remove('active'));
-  el.classList.add('active');
-  curStyle = el.dataset.style;
-}
-
-/* ── 推荐引擎 ── */
-function recommend(temp,style){
-  let tops    = wardrobe.filter(c=>c.type==='上装'   && temp>=c.tempRange[0] && temp<=c.tempRange[1]);
-  let bottoms = wardrobe.filter(c=>(c.type==='下装'||c.type==='连衣裙') && temp>=c.tempRange[0] && temp<=c.tempRange[1]);
-  let outers  = wardrobe.filter(c=>c.type==='外套'   && temp>=c.tempRange[0] && temp<=c.tempRange[1]);
-
-  if(style!=='all'){
-    if(tops.filter(c=>c.style===style).length)    tops    = tops.filter(c=>c.style===style);
-    if(bottoms.filter(c=>c.style===style).length) bottoms = bottoms.filter(c=>c.style===style);
-  }
-
-  const dresses = bottoms.filter(c=>c.type==='连衣裙');
-  const pants   = bottoms.filter(c=>c.type==='下装');
-
-  if(!tops.length && !dresses.length)
-    return {err:`没有适合 ${temp}°C 的衣服，请添加更多衣服`};
-
-  /* 连衣裙 */
-  if(dresses.length && (!tops.length || Math.random()<0.3)){
-    const d = dresses[Math.floor(Math.random()*dresses.length)];
-    return {top:d,bottom:null,outer:outers[0]||null,
-      reasons:['✨ 连衣裙简约利落'],colors:[d.color],isDress:true,
-      principle:'单品极简 ✓'};
-  }
-  if(!tops.length||!pants.length)
-    return {err:'上装或下装不足，请添加更多衣服'};
-
-  let best=null,bestScore=-999,bestReasons=[];
-  for(const t of tops){
-    for(const b of pants){
-      let score=0; const rs=[];
-      const hm = COLOR_MATCH[t.color]||[];
-      const hi = hm.indexOf(b.color);
-      if(hi===0){score+=10;rs.push('✨ 同色系高级感');}
-      else if(hi===1){score+=8;rs.push('✨ 经典配色');}
-      else if(hi>=2){score+=5;rs.push('✨ 和谐搭配');}
-      else score+=1;
-      /* 禁止撞色 */
-      if((t.color==='红'&&b.color==='绿')||(t.color==='绿'&&b.color==='红')) continue;
-      if(t.color==='黑'&&b.color==='黑'){score+=3;rs.push('🖤 全黑酷飒');}
-      /* 松紧 */
-      const tl=t.fit==='宽松'||t.fit==='oversize';
-      const bs=b.fit==='修身'||b.fit==='直筒';
-      if(tl&&bs){score+=5;rs.push('✨ 上宽下窄显高挑');}
-      else if(t.fit==='修身'&&(b.fit==='宽松'||b.fit==='阔腿')){score+=4;rs.push('✨ 紧上宽下慵懒感');}
-      else if(tl&&(b.fit==='宽松'||b.fit==='阔腿')){score-=3;}
-      if(t.style===b.style) score+=3;
-      if(score>bestScore){bestScore=score;best={top:t,bottom:b};bestReasons=[...rs];}
-    }
-  }
-  if(!best) return {err:'没找到合适的组合，请添加更多衣服'};
-
-  let outer=null;
-  if(temp<=22&&outers.length){
-    outer=outers.find(o=>o.style===style)||outers[0];
-    bestReasons.push(temp<=12?'🧥 天冷必备外套':'🧥 外套增加层次感');
-  }
-  const cols=[...new Set([best.top.color,best.bottom.color,outer&&outer.color].filter(Boolean))];
-  return {top:best.top,bottom:best.bottom,outer,reasons:bestReasons,
-    colors:cols,isDress:false,
-    principle:cols.length<=2?'双色极简 ✓':cols.length===3?'三色法则 ✓':'多色搭配'};
-}
-
-/* ── 生成穿搭 ── */
-function genOutfit(){
-  if(curTemp===null){ showToast('⚠️ 请先点右上角输入今日温度'); return; }
-  if(!wardrobe.length){ showToast('⚠️ 衣橱是空的，先去添加衣服'); return; }
-  document.getElementById('genIcon').textContent='⏳';
-  document.getElementById('genText').textContent='魔镜思考中...';
-  setTimeout(()=>{
-    document.getElementById('genIcon').textContent='🔄';
-    document.getElementById('genText').textContent='重新生成';
-    const r = recommend(curTemp,curStyle);
-    if(r.err){ showToast('⚠️ '+r.err); return; }
-    renderResult(r);
-  },600);
-}
-
-/* ── 渲染推荐结果 ── */
-function renderResult(r){
-  /* 配色 */
-  document.getElementById('colorDots').innerHTML = r.colors.map(c=>{
-    const hex=COLOR_HEX[c]||'#e5e7eb';
-    const bd=c==='白'?'1px solid #e5e7eb':'none';
-    return `<div style="width:20px;height:20px;border-radius:50%;background:${hex};
-                        border:${bd};box-shadow:0 2px 6px rgba(0,0,0,.15);"
-                 title="${c}"></div>
-            <span style="font-size:11px;font-weight:600;color:#6b7280;">${c}</span>`;
-  }).join('<span style="color:#d1d5db;font-size:10px;margin:0 2px;">+</span>');
-  document.getElementById('colorPrinciple').textContent = r.principle;
-
-  /* 上下装 */
-  const pair = document.getElementById('outfitPair');
-  if(r.isDress){
-    pair.style.gridTemplateColumns='1fr';
-    pair.innerHTML = mkCard(r.top,'连衣裙',r.reasons);
-  } else {
-    pair.style.gridTemplateColumns='1fr 1fr';
-    pair.innerHTML = mkCard(r.top,'上装',r.reasons)+mkCard(r.bottom,'下装',[]);
-  }
-
-  /* 外套 */
-  const os = document.getElementById('outerSlot');
-  if(r.outer){
-    os.style.display='block';
-    os.innerHTML = mkOuterCard(r.outer);
-  } else {
-    os.style.display='none';
-  }
-
-  /* 总评 */
-  document.getElementById('summaryText').textContent = mkSummary(r);
-
-  /* 造型建议 */
-  const mStyle = r.top.style!=='all'?r.top.style:curStyle;
-  const info   = MAKEUP[mStyle]||MAKEUP['all'];
-  document.getElementById('makeupStyleLabel').textContent = info.emoji+' '+mStyle;
-  document.getElementById('makeupContent').innerHTML = mkMakeup(info);
-  document.getElementById('searchLinks').innerHTML   = mkLinks(info);
-
-  const box = document.getElementById('resultBox');
-  box.style.display='block';
-  box.scrollIntoView({behavior:'smooth',block:'start'});
-}
-
-function mkCard(item,role,reasons){
-  const hex = COLOR_HEX[item.color]||'#e5e7eb';
-  const bd  = item.color==='白'?'1px solid #e5e7eb':'none';
-  const img = item.img
-    ? `<img class="outfit-img"
-            src="data:image/jpeg;base64,${item.img}"
-            style="border:${bd};" alt="${item.name}"/>`
-    : `<div class="outfit-ph">${tEmoji(item.type)}</div>`;
-  const rs  = reasons.map(r=>`<span class="reason-tag">${r}</span>`).join('');
-  return `
-    <div class="outfit-card">
-      <div style="height:3px;background:${hex};"></div>
-      ${img}
-      <div class="outfit-body">
-        <div class="outfit-role">${role}</div>
-        <div class="outfit-name">${item.name}</div>
-        <div style="display:flex;gap:4px;flex-wrap:wrap;margin-top:6px;">
-          <span class="tag t-color"
-                style="display:inline-flex;align-items:center;gap:3px;">
-            <span style="width:7px;height:7px;border-radius:50%;
-                         background:${hex};border:1px solid rgba(0,0,0,.1);
-                         display:inline-block;"></span>${item.color}
-          </span>
-          <span class="tag t-style">${item.fit}</span>
-        </div>
-        <div style="margin-top:4px;">${rs}</div>
+  grid.innerHTML=f.map(item=>`
+    <div class="ccard">
+      <div class="cimgw">
+        ${item.imgData
+          ?`<img class="cimg" src="${item.imgData}">`
+          :`<div class="cblock" style="background:${CHX[item.color]||'#eee'}">👗</div>`}
+        <button class="delbtn" onclick="delCloth('${item.id}')">✕</button>
       </div>
-    </div>`;
-}
-
-function mkOuterCard(item){
-  const hex = COLOR_HEX[item.color]||'#e5e7eb';
-  const img = item.img
-    ? `<img style="width:88px;height:88px;object-fit:cover;border-radius:12px;flex-shrink:0;"
-            src="data:image/jpeg;base64,${item.img}" alt="${item.name}"/>`
-    : `<div style="width:88px;height:88px;border-radius:12px;flex-shrink:0;
-                   background:linear-gradient(135deg,#f5f0e8,#ede8e0);
-                   display:flex;align-items:center;justify-content:center;
-                   font-size:32px;">🧥</div>`;
-  return `
-    <div style="background:white;border-radius:16px;overflow:hidden;
-                box-shadow:var(--shadow);border:1px solid var(--g2);
-                display:flex;align-items:center;gap:14px;padding:14px;">
-      ${img}
-      <div>
-        <div style="font-size:10px;font-weight:700;color:var(--g3);
-                    text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">
-          外套推荐
+      <div class="cinfo">
+        <span class="cname">${item.name}</span>
+        <div class="ctags">
+          <span class="tag tag-t">${item.type}</span>
+          <span class="tag tag-c">${item.color}</span>
+          <span class="tag tag-s">${item.style}</span>
         </div>
-        <div style="font-size:14px;font-weight:800;margin-bottom:8px;">${item.name}</div>
-        <span class="tag t-color"
-              style="display:inline-flex;align-items:center;gap:3px;">
-          <span style="width:7px;height:7px;border-radius:50%;background:${hex};
-                       border:1px solid rgba(0,0,0,.1);display:inline-block;"></span>
-          ${item.color}
-        </span>
-        <span class="reason-tag" style="margin-left:4px;">🧥 层次加分</span>
-      </div>
-    </div>`;
-}
-
-function mkSummary(r){
-  const tl = curTemp>=30?'炎热':curTemp>=22?'温暖':curTemp>=15?'凉爽':curTemp>=5?'偏冷':'寒冷';
-  const sl = curStyle==='all'?'日常百搭':curStyle;
-  let s = `今日${tl}（${curTemp}°C），推荐【${sl}】风格。`;
-  if(r.isDress){
-    s += `${r.top.name}一件搞定，简约利落。`;
-  } else {
-    s += `${r.top.name}搭配${r.bottom.name}，`;
-    const hm=COLOR_MATCH[r.top.color]||[];
-    const hi=hm.indexOf(r.bottom.color);
-    if(hi===0) s+=`${r.top.color}与${r.bottom.color}同色系，高级感十足。`;
-    else if(hi===1) s+=`${r.top.color}配${r.bottom.color}经典好看。`;
-    else s+=`整体色调和谐，日常实穿。`;
-    const tl2=r.top.fit==='宽松'||r.top.fit==='oversize';
-    const bs=r.bottom.fit==='修身'||r.bottom.fit==='直筒';
-    if(tl2&&bs) s+=' 上宽下窄比例更显高挑。';
-  }
-  if(r.outer) s+=` 外搭${r.outer.name}增加层次感。`;
-  return s;
-}
-
-function mkMakeup(info){
-  return [
-    {icon:'💄',label:'妆容',main:info.mk,sub:info.mks},
-    {icon:'💇',label:'发型',main:info.hr,sub:info.hrs},
-    {icon:'👜',label:'配饰',main:info.acc,sub:'点睛之笔'},
-  ].map(row=>`
-    <div class="makeup-row">
-      <div class="m-icon">${row.icon}</div>
-      <div>
-        <div style="font-size:10px;font-weight:700;color:var(--g3);
-                    text-transform:uppercase;letter-spacing:1px;margin-bottom:3px;">
-          ${row.label}
-        </div>
-        <div class="m-main">${row.main}</div>
-        <div class="m-sub">${row.sub}</div>
+        <span class="ctemp">🌡️ ${item.tempRange[0]}℃ — ${item.tempRange[1]}℃</span>
       </div>
     </div>`).join('');
 }
 
-function mkLinks(info){
-  const q=encodeURIComponent(info.q);
-  return `
-    <a href="https://www.xiaohongshu.com/search_result?keyword=${q}"
-       target="_blank" class="s-link"
-       style="background:#fff0f0;color:#fe2c55;border:1.5px solid #fe2c55;">
-      📕 小红书
-    </a>
-    <a href="https://search.bilibili.com/all?keyword=${q}"
-       target="_blank" class="s-link"
-       style="background:#fff0f5;color:#fb7299;border:1.5px solid #fb7299;">
-      📺 B站
-    </a>
-    <a href="https://www.baidu.com/s?wd=${q}"
-       target="_blank" class="s-link"
-       style="background:#f0f4ff;color:#3b82f6;border:1.5px solid #3b82f6;">
-      🔍 百度
-    </a>`;
+function renderTrend(){
+  document.getElementById('tcontent').innerHTML=`
+    <span class="tsec">年度流行色</span>
+    <div class="cscroll">
+      ${TREND.colors.map(c=>`
+        <div class="chip">
+          <div class="cdot" style="background:${c.hex}"></div>
+          <span class="chip-n">${c.name}</span>
+          <span class="chip-d">${c.desc}</span>
+        </div>`).join('')}
+    </div>
+    <span class="tsec">当季潮流</span>
+    <div class="twrap">${TREND.macro.map(m=>`<span class="tkw">${m}</span>`).join('')}</div>
+    <span class="tsec">爆款单品</span>
+    <div class="twrap">${TREND.keyPieces.map(p=>`<span class="tpc">${p}</span>`).join('')}</div>`;
 }
 
-/* ── Toast ── */
-let _tt=null;
-function showToast(msg){
+let curOutfits=[];
+
+function renderOutfits(outfits){
+  document.getElementById('oempty').style.display='none';
+  document.getElementById('oresults').innerHTML=`
+    <div class="osec-h">
+      <span class="osec-t">为你生成 ${outfits.length} 套搭配</span>
+      <span class="osec-s">点击展开详情</span>
+    </div>
+    ${outfits.map((o,i)=>renderCard(o,i)).join('')}`;
+}
+
+function renderCard(o,i){
+  const rc=o.rank<=3?'r'+o.rank:'ro';
+  const sc=o.score>=90?'sh_':o.score>=75?'sm_':'sl_';
+  return`
+  <div class="ocard" id="oc-${i}">
+    <div class="ohdr" onclick="toggleO(${i})">
+      <div class="ometa">
+        <div class="rbadge ${rc}">${o.rank}</div>
+        <div class="oinfo">
+          <span class="oname">${o.outfitName}</span>
+          ${o.aiTip?`<span class="otip">"${o.aiTip}"</span>`:''}
+        </div>
+      </div>
+      <div class="scir ${sc}">
+        <span class="snum">${o.score}</span>
+        <span class="slbl">分</span>
+      </div>
+    </div>
+    ${o.trendTags.length?`<div class="tbadges">${o.trendTags.map(t=>`<span class="tbadge" style="background:${t.color}22;color:${t.color};border:1px solid ${t.color}44">${t.label}</span>`).join('')}</div>`:''}
+    <div class="prow">
+      ${o.colorPalette.map(c=>`<div class="pdot" style="background:${c.hex};${c.isSuggest?'border:2px dashed #ccc':''}" title="${c.name}"></div>`).join('')}
+      ${o.colorPalette.some(c=>c.isSuggest)?'<span class="phint">＋建议点缀色</span>':''}
+    </div>
+    <div class="odet" id="od-${i}" style="display:none">
+      <!-- 单品 -->
+      <div class="dsec">
+        <span class="dtitle">👗 本套单品</span>
+        <div class="igrid">
+          ${[o.top,o.bottom,o.shoe,o.accessory].filter(Boolean).map(item=>`
+            <div class="icard">
+              ${item.imgData?`<img class="iimg" src="${item.imgData}">`:`<div class="iblock" style="background:${CHX[item.color]||'#eee'}">👗</div>`}
+              <span class="ilbl">${item.type}</span>
+              <span class="iname">${item.name}</span>
+              <div class="itags"><span class="itag">${item.color}</span><span class="itag">${item.style}</span></div>
+            </div>`).join('')}
+        </div>
+      </div>
+      <!-- 配饰 -->
+      <div class="dsec">
+        <span class="dtitle">👜 配饰建议</span>
+        <div class="agrid">
+          ${[{icon:'👜',type:'包袋',val:o.accessoryRec.bag},{icon:'👟',type:'鞋履',val:o.accessoryRec.shoes},{icon:'💍',type:'珠宝',val:o.accessoryRec.jewelry},{icon:'🎩',type:'帽子',val:o.accessoryRec.hat},{icon:'🪢',type:'腰带',val:o.accessoryRec.belt},{icon:'🧣',type:'丝巾',val:o.accessoryRec.scarf}].map(a=>`
+            <div class="aitem"><span class="aicon">${a.icon}</span><span class="atype">${a.type}</span><span class="aval">${a.val}</span></div>`).join('')}
+        </div>
+        <div class="advbox">
+          <span class="adv">🎨 ${o.accessoryRec.colorAdvice.accent}</span>
+          <span class="adv">🌈 ${o.accessoryRec.colorAdvice.tonal}</span>
+          <span class="adv">✨ ${o.accessoryRec.colorAdvice.metal}</span>
+        </div>
+        <div class="tipbox"><span class="tiptxt">💡 ${o.accessoryRec.tip}</span></div>
+      </div>
+      <!-- 妆容 -->
+      <div class="dsec">
+        <span class="dtitle">💄 今日妆容方案</span>
+        <div class="mkbox">
+          <span class="mkcon">${o.makeupRec.concept}</span>
+          <span class="mkvibe">"${o.makeupRec.vibe}"</span>
+          <span class="mknote">🎨 ${o.makeupRec.colorNote}</span>
+        </div>
+        <!-- 底妆 -->
+        <div class="mkblk">
+          <span class="mkblkt">底妆</span>
+          <span class="mkd">${o.makeupRec.skin.base}</span>
+          <span class="mkd">腮红：${o.makeupRec.skin.blush}</span>
+          <div class="plist">${o.makeupRec.skin.products.map(p=>`<span class="pitem">· ${p}</span>`).join('')}</div>
+        </div>
+        <!-- 眼妆 -->
+        <div class="mkblk">
+          <span class="mkblkt">眼妆 — ${o.makeupRec.eye.style}</span>
+          <span class="pname">推荐眼影盘：${o.makeupRec.eye.shadow.palette}</span>
+          <div class="ssteps">
+            ${o.makeupRec.eye.shadow.steps.map(s=>`
+              <div class="sstep">
+                <div class="sdot" style="background:${s.hex}"></div>
+                <div class="sinfo">
+                  <div class="shdr"><span class="sarea">${s.area}</span><span class="scolor">${s.color}</span><span class="shex">${s.hex}</span></div>
+                  <span class="sdesc">${s.desc}</span>
+                </div>
+              </div>`).join('')}
+          </div>
+          <div class="edet">
+            <span class="eitem">✏️ 眼线：${o.makeupRec.eye.liner}</span>
+            <span class="eitem">👁️ 睫毛：${o.makeupRec.eye.lash}</span>
+            <span class="eitem">🖊️ 眉毛：${o.makeupRec.eye.brow}</span>
+          </div>
+          <div class="plist">${o.makeupRec.eye.products.map(p=>`<span class="pitem">· ${p}</span>`).join('')}</div>
+        </div>
+        <!-- 唇妆 -->
+        <div class="mkblk">
+          <span class="mkblkt">唇妆 — ${o.makeupRec.lip.style}</span>
+          <div class="reclip">
+            <div class="lswlg" style="background:${o.makeupRec.recommendedLip.hex}"></div>
+            <div class="linfo">
+              <span class="lbadge">★ 今日推荐</span>
+              <span class="lname">${o.makeupRec.recommendedLip.name}</span>
+              ${o.makeupRec.recommendedLip.no?`<span class="lno">色号：${o.makeupRec.recommendedLip.no}</span>`:''}
+              <span class="ldesc">${o.makeupRec.recommendedLip.desc}</span>
+            </div>
+          </div>
+          <span class="lotitle">备选色号</span>
+          <div class="lopts">
+            ${o.makeupRec.lip.options.map(l=>`
+              <div class="lopt">
+                <div class="lswsm" style="background:${l.hex}"></div>
+                <div class="loi">
+                  <span class="lon">${l.name}</span>
+                  ${l.no?`<span class="lono">色号 ${l.no}</span>`:''}
+                  <span class="lod">${l.desc}</span>
+                </div>
+              </div>`).join('')}
+          </div>
+          <span class="ftip">质地：${o.makeupRec.lip.finish}</span>
+        </div>
+        <!-- 香水美甲 -->
+        <div class="extgrid">
+          <div class="extitem"><span class="extico">🌸</span><span class="extt">香水</span><span class="extv">${o.makeupRec.fragrance}</span></div>
+          <div class="extitem"><span class="extico">💅</span><span class="extt">美甲</span><span class="extv">${o.makeupRec.nailColor}</span></div>
+        </div>
+        <div class="ovbox"><span class="ovtip">✦ ${o.makeupRec.overall}</span></div>
+      </div>
+      <!-- 操作 -->
+      <div class="arow">
+        <button class="abtn savebtn" onclick="saveO(${i})">❤️ 收藏</button>
+        <button class="abtn shrbtn" onclick="shareO(${i})">🔗 分享</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderSaved(){
+  const s=DB.getS();
+  document.getElementById('svcount').textContent=s.length+' 套';
+  const list=document.getElementById('svlist');
+  const empty=document.getElementById('svempty');
+  if(!s.length){list.innerHTML='';empty.style.display='block';return;}
+  empty.style.display='none';
+  list.innerHTML=s.map((sv,i)=>`
+    <div class="svcard">
+      <div class="svi">
+        <span class="svn">${sv.outfitName}</span>
+        ${sv.aiTip?`<span class="svt">"${sv.aiTip}"</span>`:''}
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:3px;">
+          <span class="tag tag-t">${sv.top.name}</span>
+          <span style="color:#ccc;font-size:11px">+</span>
+          <span class="tag tag-t">${sv.bottom.name}</span>
+        </div>
+        <span class="svs">综合评分 ${sv.score}分 · ${new Date(sv.savedAt).toLocaleDateString()}</span>
+      </div>
+      <button class="svdel" onclick="delSaved(${i})">删除</button>
+    </div>`).join('');
+}
+
+// ══════════════════════════════════════
+// 交互函数
+// ══════════════════════════════════════
+let curFilter='全部';
+let trendOpen=false;
+
+function go(name){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+  const idx={add:0,wardrobe:1,outfit:2,saved:3};
+  document.querySelectorAll('.nav-tab')[idx[name]]?.classList.add('active');
+  if(name==='wardrobe') renderW(curFilter);
+  if(name==='saved') renderSaved();
+}
+
+function toggleTrend(){
+  trendOpen=!trendOpen;
+  document.getElementById('tcontent').style.display=trendOpen?'block':'none';
+  document.getElementById('tarrow').textContent=trendOpen?'▲':'▼';
+}
+
+function toggleO(i){
+  const d=document.getElementById('od-'+i);
+  const open=d.style.display==='block';
+  document.querySelectorAll('[id^="od-"]').forEach(el=>el.style.display='none');
+  if(!open) d.style.display='block';
+}
+
+function genOutfits(){
+  const w=DB.getW();
+  if(!w.length){toast('请先添加衣服');return;}
+  const temp=document.getElementById('tinput').value;
+  const occ=document.getElementById('occ').value;
+  const mood=document.getElementById('mood').value;
+  showLoading('AI 计算最佳搭配...');
+  setTimeout(()=>{
+    const combos=genCombos(w,temp,occ,mood);
+    hideLoading();
+    if(!combos){toast('需要至少一件上装和一件下装');return;}
+    const top10=combos.slice(0,10);
+    curOutfits=top10.map((c,i)=>({
+      ...c,rank:i+1,
+      trendTags:getTT(c),
+      colorPalette:getCP(c),
+      outfitName:getName(c),
+      aiTip:getTip(c,occ,mood),
+    }));
+    document.getElementById('ccount').textContent=`共${combos.length}种组合`;
+    document.getElementById('tbar').style.display='block';
+    renderTrend();
+    renderOutfits(curOutfits);
+    toast(`✦ 生成${curOutfits.length}套搭配`);
+  },600);
+}
+
+function saveO(i){
+  const o=curOutfits[i];if(!o) return;
+  const s=DB.getS();
+  if(s.some(sv=>sv.top.id===o.top.id&&sv.bottom.id===o.bottom.id)){toast('已收藏过了');return;}
+  s.unshift({outfitName:o.outfitName,aiTip:o.aiTip,top:o.top,bottom:o.bottom,shoe:o.shoe,accessory:o.accessory,accessoryRec:o.accessoryRec,makeupRec:o.makeupRec,score:o.score,savedAt:Date.now()});
+  DB.setS(s.slice(0,50));
+  toast('收藏成功 ❤️');
+}
+
+function shareO(i){
+  const o=curOutfits[i];if(!o) return;
+  const txt=`「${o.outfitName}」\n${o.aiTip||''}\n上装：${o.top.name}\n下装：${o.bottom.name}\n评分：${o.score}分`;
+  if(navigator.share) navigator.share({title:'穿搭魔镜',text:txt}).catch(()=>{});
+  else navigator.clipboard?.writeText(txt).then(()=>toast('已复制到剪贴板')).catch(()=>toast('请截图分享'));
+}
+
+function delSaved(i){
+  if(!confirm('确定删除？')) return;
+  const s=DB.getS();s.splice(i,1);DB.setS(s);renderSaved();toast('已删除');
+}
+
+function clearSaved(){
+  if(!confirm('确定清空所有收藏？')) return;
+  DB.setS([]);renderSaved();toast('已清空');
+}
+
+// ══════════════════════════════════════
+// 添加衣服
+// ══════════════════════════════════════
+let curImg='';
+
+function handleFile(input){
+  const file=input.files[0];if(!file) return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    curImg=e.target.result;
+    document.getElementById('pi').src=curImg;
+    document.getElementById('pi').style.display='block';
+    document.getElementById('uz').style.display='none';
+    document.getElementById('nobtn').style.display='none';
+    // 如果填了APIKey就识别，否则直接显示表单
+    if(QWEN_KEY && QWEN_KEY!=='在这里填入你的APIKey' && QWEN_KEY.startsWith('sk-')){
+      recognizeImg(curImg);
+    } else {
+      showForm();
+    }
+  };
+  reader.readAsDataURL(file);
+}
+
+function fillForm(r){
+  if(r.name)   document.getElementById('cname').value=r.name;
+  if(r.type)   document.getElementById('ctype').value=r.type;
+  if(r.color)  document.getElementById('ccolor').value=r.color;
+  if(r.fit)    document.getElementById('cfit').value=r.fit;
+  if(r.style)  document.getElementById('cstyle').value=r.style;
+  if(r.tempMin!==undefined) document.getElementById('tmin').value=r.tempMin;
+  if(r.tempMax!==undefined) document.getElementById('tmax').value=r.tempMax;
+  document.getElementById('addForm').style.display='block';
+}
+
+function showForm(){
+  document.getElementById('uz').style.display='none';
+  document.getElementById('nobtn').style.display='none';
+  document.getElementById('aibox').style.display='none';
+  document.getElementById('addForm').style.display='block';
+}
+
+function saveCloth(){
+  const name=document.getElementById('cname').value.trim();
+  if(!name){toast('请填写衣服名称');return;}
+  const cloth={
+    id:Date.now().toString(),name,
+    type:document.getElementById('ctype').value,
+    color:document.getElementById('ccolor').value,
+    fit:document.getElementById('cfit').value,
+    style:document.getElementById('cstyle').value,
+    tempRange:[Number(document.getElementById('tmin').value)||0,Number(document.getElementById('tmax').value)||40],
+    imgData:curImg,createdAt:Date.now(),
+  };
+  const w=DB.getW();w.unshift(cloth);DB.setW(w);
+  toast('✅ 保存成功！');
+  resetAdd();
+  setTimeout(()=>go('wardrobe'),700);
+}
+
+function resetAdd(){
+  curImg='';
+  document.getElementById('fi').value='';
+  document.getElementById('pi').style.display='none';
+  document.getElementById('pi').src='';
+  document.getElementById('uz').style.display='block';
+  document.getElementById('nobtn').style.display='block';
+  document.getElementById('addForm').style.display='none';
+  document.getElementById('aibox').style.display='none';
+  document.getElementById('okbanner').style.display='none';
+  document.getElementById('cname').value='';
+  document.getElementById('tmin').value='10';
+  document.getElementById('tmax').value='30';
+}
+
+function delCloth(id){
+  if(!confirm('确定删除？')) return;
+  const w=DB.getW().filter(i=>i.id!==id);DB.setW(w);
+  renderW(curFilter);toast('已删除');
+}
+
+function filterW(type,btn){
+  curFilter=type;
+  document.querySelectorAll('.fbtn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderW(type);
+}
+
+// ══════════════════════════════════════
+// 工具
+// ══════════════════════════════════════
+function showLoading(txt='加载中...'){
+  document.getElementById('ltxt').textContent=txt;
+  document.getElementById('lo').classList.add('show');
+}
+function hideLoading(){document.getElementById('lo').classList.remove('show');}
+
+let toastT=null;
+function toast(msg){
   const el=document.getElementById('toast');
-  el.textContent=msg; el.classList.add('show');
-  if(_tt) clearTimeout(_tt);
-  _tt=setTimeout(()=>el.classList.remove('show'),2500);
+  el.textContent=msg;el.classList.add('show');
+  if(toastT) clearTimeout(toastT);
+  toastT=setTimeout(()=>el.classList.remove('show'),2200);
 }
 
-window.addEventListener('DOMContentLoaded',init);
+// ══════════════════════════════════════
+// 初始化 + 示例数据
+// ══════════════════════════════════════
+document.addEventListener('DOMContentLoaded',()=>{
+  if(!DB.getW().length){
+    DB.setW([
+      {id:'d1',name:'白色宽松棉质T恤',type:'上装',color:'白',fit:'宽松',style:'Clean Fit',tempRange:[15,35],imgData:'',createdAt:Date.now()},
+      {id:'d2',name:'黑色直筒西装裤',type:'下装',color:'黑',fit:'直筒',style:'正式',tempRange:[10,28],imgData:'',createdAt:Date.now()},
+      {id:'d3',name:'米白色针织开衫',type:'外套',color:'米白',fit:'宽松',style:'Old Money',tempRange:[5,20],imgData:'',createdAt:Date.now()},
+      {id:'d4',name:'牛仔蓝阔腿裤',type:'下装',color:'牛仔蓝',fit:'阔腿',style:'休闲',tempRange:[10,28],imgData:'',createdAt:Date.now()},
+      {id:'d5',name:'驼色毛呢大衣',type:'外套',color:'驼',fit:'直筒',style:'Old Money',tempRange:[0,15],imgData:'',createdAt:Date.now()},
+      {id:'d6',name:'粉色蓬蓬半裙',type:'下装',color:'粉',fit:'宽松',style:'Balletcore',tempRange:[15,30],imgData:'',createdAt:Date.now()},
+    ]);
+  }
+  renderW();
+  renderSaved();
+});
 </script>
 </body>
 </html>
